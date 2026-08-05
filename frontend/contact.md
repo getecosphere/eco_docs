@@ -1,18 +1,23 @@
 # Contact
 
-eco is built by **Kelas Tanpa Tembok** — a team that designs and runs production estates with the eco framework.
+Eco is built as an independent framework — an end-to-end solution for organizations, individuals, and teams of every size who want to manage complexity and produce high-quality software with their own principles in the world of AI.
 
-## Email
+> **Eco is not released yet.** If you'd like to know when the public release is ready, drop your email below and we'll let you know. No spam — we take deliverability as seriously as we take code.
 
-Reach the team at:
+## Get notified when Eco launches
 
-- **eco@stuff8.com** — the eco team inbox
+<!-- The widget script + stylesheet are injected site-wide from .vitepress/config.mjs head. -->
+<eco-contact-form
+  endpoint="https://eco.stuff8.com/api/contact-form/submit"
+  title="Be first to know"
+  source="eco-docs-contact">
+</eco-contact-form>
 
-All mail sent to `eco@stuff8.com` is delivered via Cloudflare Email Routing to the team's mailbox, so a single address reaches the people who maintain eco.
+If the form doesn't load, email us directly at **eco@stuff8.com**.
 
 ## More
 
 - This documentation site: [eco.stuff8.com](https://eco.stuff8.com)
-- Case study: [Stuff8](https://eco.stuff8.com/case-study/stuff8) — a live production estate built with eco
+- Case study: [Stuff8](https://eco.stuff8.com/case-study/stuff8) — a live production estate built with Eco
 
-Whether you're an organization, an individual, a small team, or a large one — if you want to manage complexity and produce high-quality software with your own principles in the world of AI, the eco team would love to hear from you.
+Whether you're an organization, an individual, a small team, or a large one — the Eco project would love to hear from you.

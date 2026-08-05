@@ -1,6 +1,6 @@
 # Domain Catalog
 
-The domain catalog is eco's registry of reusable building blocks. It lives in `eco/repos.json` — the single source of truth for which domains exist, where they live, what they require, and how they are composed into estates.
+The domain catalog is Eco's registry of reusable building blocks. It lives in `eco/repos.json` — the single source of truth for which domains exist, where they live, what they require, and how they are composed into estates.
 
 ## How the catalog works
 
@@ -10,7 +10,7 @@ Each entry declares a domain's identity and its dependency graph:
 {
   "name": "notifications",
   "description": "Reusable in-app notifications domain: persistent notifications, read/unread state, unread counts, and realtime WebSocket delivery",
-  "git": "git@github.com:kelastanpatembok/notifications.git",
+  "git": "git@github.com:eco/notifications.git",
   "branch": "main",
   "requires": ["auth"]
 }
@@ -21,7 +21,7 @@ Each entry declares a domain's identity and its dependency graph:
 - `branch` — the shared catalog branch (`main`); estates can override per-project
 - `requires` — declared dependencies, enforced during composition
 
-A composition app declares the domains it wants; eco clones them, resolves the dependency graph, and wires them together. **Adding a domain to an estate is adding a line to the `domains:` list.**
+A composition app declares the domains it wants; Eco clones them, resolves the dependency graph, and wires them together. **Adding a domain to an estate is adding a line to the `domains:` list.**
 
 ## Reusable support domains
 
@@ -62,9 +62,23 @@ Reusable Retrieval-Augmented Generation support domain. Answers questions about 
 - **Requires:** — (standalone support domain)
 - **Stack:** Rust (axum), MongoDB, fastembed/ONNX, DeepSeek
 
+### email-manager
+
+Reusable transactional email domain. Owns outbound delivery for an estate: queueing, rate limiting, anti-spam (per-recipient caps, global hourly budget, warm-up ramp for new sender domains, and a suppression list for hard bounces, spam reports, and unsubscribes), and per-message delivery status. Other domains call it instead of talking to a mail provider directly.
+
+- **Requires:** — (standalone support domain)
+- **Stack:** Rust (axum), MongoDB, Brevo
+
+### contact-form
+
+Reusable contact/lead capture domain. Owns consent, rate-limited submissions (per IP and per email, plus a bot honeypot), and notifies the estate owner through email-manager. Ships a dependency-free `<eco-contact-form>` frontend widget any estate can drop onto a page.
+
+- **Requires:** email-manager
+- **Stack:** Rust (axum), MongoDB
+
 ## Stuff8 domain domains
 
-Stuff8 — the personal inventory → marketplace estate — composes its own domain domains on top of the reusable ones. These demonstrate how a product expresses its specific model through eco.
+Stuff8 — the personal inventory → marketplace estate — composes its own domain domains on top of the reusable ones. These demonstrate how a product expresses its specific model through Eco.
 
 ### inventory
 
@@ -89,7 +103,7 @@ Offers, buyer selection, and negotiation. Buyers submit offers; owners accept, r
 
 ### profile
 
-User profile: bio, experience, education, skills, certifications, social links. Split out of the legacy monolith as an independent eco-managed domain.
+User profile: bio, experience, education, skills, certifications, social links. Split out of the legacy monolith as an independent Eco-managed domain.
 
 - **Requires:** auth
 - **Stack:** Rust, MongoDB

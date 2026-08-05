@@ -2,28 +2,28 @@ import { defineConfig } from 'vitepress';
 import { withMermaid } from 'vitepress-plugin-mermaid';
 
 const siteUrl = 'https://eco.stuff8.com';
-const siteTitle = 'eco — Compose reusable domains into self-sustaining estates';
+const siteTitle = 'Eco — Compose reusable domains into self-sustaining estates';
 const siteDescription =
-  'eco is a host-native DDD platform for Proxmox. Compose reusable domains into self-sustaining application estates with a Docker-like developer experience — no Docker required. Built for the world of AI: end-to-end, from a single developer to large teams.';
+  'Eco is a host-native DDD platform for Proxmox. Compose reusable domains into self-sustaining application estates with a Docker-like developer experience — no Docker required. Built for the world of AI: end-to-end, from a single developer to large teams.';
 
 const jsonLd = JSON.stringify({
   '@context': 'https://schema.org',
   '@type': 'SoftwareApplication',
-  name: 'eco',
+  name: 'Eco',
   applicationCategory: 'DeveloperApplication',
   operatingSystem: 'Proxmox VE, Linux, macOS',
   description: siteDescription,
   url: siteUrl,
   publisher: {
     '@type': 'Organization',
-    name: 'Kelas Tanpa Tembok'
+    name: 'Eco'
   },
   offers: { '@type': 'Offer', price: '0' }
 });
 
 export default withMermaid(
   {
-    title: 'eco',
+    title: 'Eco',
     description: siteDescription,
     lang: 'en-US',
     cleanUrls: true,
@@ -31,10 +31,10 @@ export default withMermaid(
     outDir: 'dist',
     head: [
       ['meta', { name: 'theme-color', content: '#43aa82' }],
-      ['meta', { name: 'author', content: 'Kelas Tanpa Tembok' }],
+      ['meta', { name: 'author', content: 'Eco' }],
       ['meta', { name: 'robots', content: 'index, follow' }],
       ['meta', { property: 'og:type', content: 'website' }],
-      ['meta', { property: 'og:site_name', content: 'eco' }],
+      ['meta', { property: 'og:site_name', content: 'Eco' }],
       ['meta', { property: 'og:title', content: siteTitle }],
       ['meta', { property: 'og:description', content: siteDescription }],
       ['meta', { property: 'og:url', content: siteUrl }],
@@ -50,13 +50,15 @@ export default withMermaid(
       ['link', { rel: 'canonical', href: siteUrl }],
       ['link', { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }],
       ['link', { rel: 'preconnect', href: 'https://cdn.jsdelivr.net' }],
+      ['link', { rel: 'stylesheet', href: '/widgets/eco-contact-form.css' }],
+      ['script', { src: '/widgets/eco-contact-form.js', defer: true }],
       ['script', { type: 'application/ld+json', innerHTML: jsonLd }]
     ],
     themeConfig: {
       logo: { light: '/logo-light.svg', dark: '/logo-dark.svg' },
       nav: [
         { text: 'Guide', link: '/guide/getting-started' },
-        { text: 'Why eco', link: '/why/eco-vs-docker' },
+        { text: 'Why Eco', link: '/why/eco-vs-docker' },
         { text: 'Concepts', link: '/concepts/domains' },
         { text: 'Reference', link: '/reference/ecompose' },
         { text: 'Case Study', link: '/case-study/stuff8' },
@@ -75,11 +77,13 @@ export default withMermaid(
         ],
         '/why/': [
           {
-            text: 'Why eco',
+            text: 'Why Eco',
             items: [
-              { text: 'eco vs Docker', link: '/why/eco-vs-docker' },
+              { text: 'Eco vs Docker', link: '/why/eco-vs-docker' },
+              { text: 'Why Eco promotes Rust', link: '/why/why-rust' },
               { text: 'The end-to-end model', link: '/why/end-to-end' },
-              { text: 'Why the name "eco"', link: '/why/the-name' }
+              { text: 'The story behind Eco', link: '/why/story' },
+              { text: 'Why the name "Eco"', link: '/why/the-name' }
             ]
           }
         ],
@@ -91,6 +95,7 @@ export default withMermaid(
               { text: 'Estates', link: '/concepts/estates' },
               { text: 'Composition', link: '/concepts/composition' },
               { text: 'Scaling', link: '/concepts/scaling' },
+              { text: 'CI/CD — built in', link: '/concepts/cicd' },
               { text: 'What is Proxmox?', link: '/concepts/proxmox' }
             ]
           }
@@ -121,7 +126,7 @@ export default withMermaid(
       },
       footer: {
         message: 'Released under the MIT License.',
-        copyright: 'Copyright © 2026 eco — Kelas Tanpa Tembok'
+        copyright: 'Copyright © 2026 Eco'
       }
     }
   },

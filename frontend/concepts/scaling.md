@@ -21,16 +21,16 @@ This is a valid operational path if the real goal is to run many isolated compos
 ## Likely stages
 
 ### 1. Single host
-One Proxmox host runs several CTs. eco is responsible for creating CTs, provisioning runtimes, composing repos, and configuring services.
+One Proxmox host runs several CTs. Eco is responsible for creating CTs, provisioning runtimes, composing repos, and configuring services.
 
 ### 2. Proxmox cluster
 Multiple hosts form a cluster: spread CTs across nodes, live migration, better resilience. The estate model stays the same.
 
 ### 3. Multi-estate automation
-eco becomes the operational control plane: CT creation, estate bootstrap, project updates, repeated deployments.
+Eco becomes the operational control plane: CT creation, estate bootstrap, project updates, repeated deployments.
 
 ### 4. Backup, recovery, mobility
-Standardize backup, restore, snapshot, and CT migration. eco owns estate bootstrap and runtime readiness; each project owns its own data export/import formats and snapshot semantics.
+Standardize backup, restore, snapshot, and CT migration. Eco owns estate bootstrap and runtime readiness; each project owns its own data export/import formats and snapshot semantics.
 
 ## What it does less naturally
 

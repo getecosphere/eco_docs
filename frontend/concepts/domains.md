@@ -1,6 +1,6 @@
 # Domains
 
-The core unit of the eco model is the **domain** — a bounded context that is also a reusable operational unit.
+The core unit of the Eco model is the **domain** — a bounded context that is also a reusable operational unit.
 
 ## What makes a domain reusable
 
@@ -29,7 +29,7 @@ Each domain lives in its own git repository, structured into:
 ```json
 {
   "name": "marketplace",
-  "git": "git@github.com:kelastanpatembok/marketplace.git",
+  "git": "git@github.com:eco/marketplace.git",
   "branch": "main",
   "requires": ["auth", "inventory", "photos", "notifications"]
 }
@@ -39,7 +39,7 @@ If domain A requires domain B, that relationship is declared and enforced during
 
 ## Dependencies are explicit
 
-When a frontend composes a sibling domain, it declares the peer URL in `.env.example` (empty value), and eco fills it against the discovered service:
+When a frontend composes a sibling domain, it declares the peer URL in `.env.example` (empty value), and Eco fills it against the discovered service:
 
 ```
 PUBLIC_PROFILE_URL=

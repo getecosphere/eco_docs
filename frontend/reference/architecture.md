@@ -1,11 +1,11 @@
 # Architecture
 
-eco is building a host-native DDD platform. The doctrine is intentionally opinionated.
+Eco is building a host-native DDD platform. The doctrine is intentionally opinionated.
 
 ## The model
 
 - one Proxmox CT = one machine boundary (may host one or more estates)
-- one eco = one composition/orchestration layer installed once per CT, shared by every estate
+- one Eco = one composition/orchestration layer installed once per CT, shared by every estate
 - one repo = one subsystem / bounded context
 - `*_bootstrap` repos hold estate deployment definitions (`ecompose.yml`)
 - `*_composition` repos orchestrate domains into the user experience, holding the primary `frontend/`
@@ -13,7 +13,7 @@ eco is building a host-native DDD platform. The doctrine is intentionally opinio
 ## Design principles
 
 1. **Per-application isolation, not per-service isolation** — isolation comes from the CT at the application boundary
-2. **eco is the sanctioned orchestrator** — composition, provisioning, wiring converge here
+2. **Eco is the sanctioned orchestrator** — composition, provisioning, wiring converge here
 3. **Subsystems are composed explicitly** — `repos.json` is the source of truth
 4. **Runtime wiring is an architectural concern** — ports, `.env`, secrets, PM2 are boundary enforcement
 5. **Dependencies visible at composition time** — declared and enforced during setup
@@ -23,7 +23,7 @@ eco is building a host-native DDD platform. The doctrine is intentionally opinio
 
 ## Execution model
 
-eco uses a hybrid model:
+Eco uses a hybrid model:
 
 - Node provides the canonical CLI interface
 - bundled Bash scripts provide the working workspace-side execution
@@ -33,7 +33,7 @@ Migration strategy: keep Node as the stable CLI surface, keep proven Bash behavi
 ## Gateway contract
 
 - gateway implemented with Caddy
-- generated and managed by eco
+- generated and managed by Eco
 - normal PM2-managed service inside the app CT
 - binds an internal estate port (not public 80)
 - Caddy admin API off (avoid `127.0.0.1:2019` collisions)

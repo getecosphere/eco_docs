@@ -1,10 +1,10 @@
 # Composition
 
-Composition is how eco turns independent domains into a working application estate. It is a Docker-like developer experience built natively — no containers.
+Composition is how Eco turns independent domains into a working application estate. It is a Docker-like developer experience built natively — no containers.
 
 ## The Docker analogy
 
-| Docker | eco |
+| Docker | Eco |
 | --- | --- |
 | image defines runtime | `ecompose.yml` defines runtime requirements |
 | compose defines service topology | `provision.sh` installs declared runtimes |
@@ -29,7 +29,7 @@ This is not Docker reimplemented. It is a host-native Compose-and-image-like wor
 ## Composition contract
 
 - **Per-application isolation, not per-service isolation** — isolation is provided by the CT at the application boundary
-- **eco is the sanctioned orchestrator** — workspace composition, provisioning, and wiring converge here
+- **Eco is the sanctioned orchestrator** — workspace composition, provisioning, and wiring converge here
 - **Dependencies are visible at composition time** — a `requires` relationship is declared and enforced during setup
 - **Runtime wiring is an architectural concern** — port assignment, `.env`, secrets, and PM2 definitions enforce boundaries
 
@@ -42,8 +42,8 @@ PUBLIC_PROFILE_URL=
 PUBLIC_PHOTOS_URL=
 ```
 
-eco's `resolve_vite_public_peer_urls` fills them — `localhost:<port>` in dev, the matching `expose.additional` hostname in prod.
+Eco's `resolve_vite_public_peer_urls` fills them — `localhost:<port>` in dev, the matching `expose.additional` hostname in prod.
 
 ## Never fix .env directly
 
-`.env` files are generated, CT-local state. If a service needs a new env var, the fix belongs in eco or in the tracked manifest/`.env.example` — never by hand-editing a deployed `.env`. After the eco-level change, re-run `eco up` so the generated env is correct and survives redeploys.
+`.env` files are generated, CT-local state. If a service needs a new env var, the fix belongs in Eco or in the tracked manifest/`.env.example` — never by hand-editing a deployed `.env`. After the Eco-level change, re-run `eco up` so the generated env is correct and survives redeploys.

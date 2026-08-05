@@ -1,14 +1,14 @@
 # Supported Languages
 
-eco is language-agnostic at the domain level — a domain owns its runtime and declares it in `ecompose.yml`. eco provisions the runtime and manages the service lifecycle, no matter the language.
+Eco is language-agnostic at the domain level — a domain owns its runtime and declares it in `ecompose.yml`. Eco provisions the runtime and manages the service lifecycle, no matter the language.
 
-Below are the runtimes eco provisions today, with the languages most commonly used across eco estates.
+Below are the runtimes Eco provisions today, with the languages most commonly used across Eco estates.
 
 ## Rust — the primary backend language
 
 <img src="/langs/rust.svg" width="48" height="48" alt="Rust logo" style="float:left;margin:0 16px 16px 0" />
 
-Rust (with the **axum** web framework) is the workhorse of eco estates. It powers `auth`, `photos`, `inventory`, `marketplace`, `bidding`, `chat`, `profile`, and the RAG domain. Services are compiled to native binaries, run via PM2, and are cheap to operate — a deliberate response to the heavyweight JVM services that preceded them.
+Rust (with the **axum** web framework) is the workhorse of Eco estates. It powers `auth`, `photos`, `inventory`, `marketplace`, `bidding`, `chat`, `profile`, and the RAG domain. Services are compiled to native binaries, run via PM2, and are cheap to operate — a deliberate response to the heavyweight JVM services that preceded them.
 
 Rust domains typically pair with **MongoDB**, **Redis**, and **MinIO/S3** runtimes.
 
@@ -22,13 +22,13 @@ Go powers the **notifications** domain — a persistent, realtime in-app notific
 
 <img src="/langs/nodejs.svg" width="48" height="48" alt="Node.js logo" style="float:left;margin:0 16px 16px 0" />
 
-Node.js (v20) is the runtime for every frontend and composition app. eco's own CLI is Node.js too. Frontends are built with modern frameworks and deployed as static or SSR apps under PM2.
+Node.js (v20) is the runtime for every frontend and composition app. Eco's own CLI is Node.js too. Frontends are built with modern frameworks and deployed as static or SSR apps under PM2.
 
 ## TypeScript — frontend composition
 
 <img src="/langs/typescript.svg" width="48" height="48" alt="TypeScript logo" style="float:left;margin:0 16px 16px 0" />
 
-TypeScript is used across the eco frontend ecosystem — in **Astro.js** composition apps, **Next.js** platform apps, and the **VitePress** docs site you're reading now.
+TypeScript is used across the Eco frontend ecosystem — in **Astro.js** composition apps, **Next.js** platform apps, and the **VitePress** docs site you're reading now.
 
 ## JavaScript frameworks commonly composed
 
@@ -36,7 +36,7 @@ TypeScript is used across the eco frontend ecosystem — in **Astro.js** composi
 <img src="/langs/nextjs.svg" width="48" height="48" alt="Next.js logo" style="float:left;margin:0 16px 16px 0" />
 <img src="/langs/tailwindcss.svg" width="48" height="48" alt="Tailwind CSS logo" style="float:left;margin:0 16px 16px 0" />
 
-- **Astro.js + Tailwind CSS** — the primary frontend stack for eco composition apps (e.g. Stuff8)
+- **Astro.js + Tailwind CSS** — the primary frontend stack for Eco composition apps (e.g. Stuff8)
 - **Next.js + React** — used for platform and legacy LMS frontends
 - **Tailwind CSS** — the shared styling foundation
 
@@ -44,7 +44,7 @@ TypeScript is used across the eco frontend ecosystem — in **Astro.js** composi
 
 <img src="/langs/python.svg" width="48" height="48" alt="Python logo" style="float:left;margin:0 16px 16px 0" />
 
-Python is used for build-time and content tooling in eco estates — asset generation, image processing scripts, and other supporting utilities.
+Python is used for build-time and content tooling in Eco estates — asset generation, image processing scripts, and other supporting utilities.
 
 ## Java — legacy, on the way out
 
@@ -71,6 +71,6 @@ Java (17) + Maven is a supported runtime for legacy services. The original `auth
 
 ## Languages are a domain decision
 
-A domain's `CLAUDE.md` fixes its contract, including its runtime. eco doesn't force a language on you — it provisions whatever the service declares and keeps the operational surface identical (ports, `.env`, PM2, gateway routing) regardless.
+A domain's `CLAUDE.md` fixes its contract, including its runtime. Eco doesn't force a language on you — it provisions whatever the service declares and keeps the operational surface identical (ports, `.env`, PM2, gateway routing) regardless.
 
 See also: [ecompose.yml reference](/reference/ecompose), [Architecture](/reference/architecture).

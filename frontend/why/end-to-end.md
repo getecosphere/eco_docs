@@ -1,6 +1,6 @@
 # The end-to-end model
 
-eco is an **end-to-end solution** — for organizations, individuals, small teams, and large teams — to manage complexity and produce high-quality code guided by their own principles in the world of AI.
+Eco is an **end-to-end solution** — for organizations, individuals, small teams, and large teams — to manage complexity and produce high-quality code guided by their own principles in the world of AI.
 
 The key idea is simple: **the supporting domains are done already.**
 
@@ -8,7 +8,7 @@ The key idea is simple: **the supporting domains are done already.**
 
 In a traditional project, a new engineer spends their first months learning the hidden knowledge of the codebase — where the auth lives, how storage works, which service owns what, how to deploy, which ports, which secrets.
 
-With eco, that knowledge is **captured in the domain contracts**. A new staff member — even one brand new to the product — joins and can produce a working feature immediately, because:
+With Eco, that knowledge is **captured in the domain contracts**. A new staff member — even one brand new to the product — joins and can produce a working feature immediately, because:
 
 - the **auth** domain already owns login, sessions, and JWTs
 - the **photos** domain already owns uploads and media storage
@@ -40,7 +40,7 @@ Adding it meant:
    ```
 3. **Run it** — `eco up`
 
-eco then does the rest:
+Eco then does the rest:
 
 - builds the Rust service (axum + fastembed/ONNX embeddings + DeepSeek client)
 - wires `.env` with `MONGODB_URI` and `DEEPSEEK_API_KEY`
@@ -48,7 +48,7 @@ eco then does the rest:
 - exposes the service URL to consuming frontends (`PUBLIC_RAG_URL=`)
 - restarts the service under PM2
 
-The domain owned its whole lifecycle — ingestion, chunking, embedding, retrieval, chat — and the estate absorbed it without touching a single existing service. **That is what a supporting domain means in eco: pluggable capability, not a rewrite.**
+The domain owned its whole lifecycle — ingestion, chunking, embedding, retrieval, chat — and the estate absorbed it without touching a single existing service. **That is what a supporting domain means in Eco: pluggable capability, not a rewrite.**
 
 ## Newbie and veteran produce the same result
 
@@ -76,4 +76,4 @@ The newbie inherits that contract, composes it, and ships. **The quality comes f
 
 This is the difference between a project and an ecosystem: in a project, each new feature is a new adventure. In an ecosystem, each new feature plugs into a system that is already alive.
 
-See also: [Why the name "eco"](/why/the-name), [Domains](/concepts/domains), [The Stuff8 case study](/case-study/stuff8).
+See also: [Why the name "Eco"](/why/the-name), [Domains](/concepts/domains), [The Stuff8 case study](/case-study/stuff8).

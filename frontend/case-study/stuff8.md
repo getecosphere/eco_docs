@@ -1,8 +1,8 @@
 # Case Study: Stuff8
 
-Stuff8 is a production estate built with eco — a **personal inventory system** whose inventory can optionally become a public marketplace. It demonstrates the full composition model: ten independent domains composed into one application, deployed on a shared CT, exposed through a single hostname.
+Stuff8 is a production estate built with Eco — a **personal inventory system** whose inventory can optionally become a public marketplace. It demonstrates the full composition model: ten independent domains composed into one application, deployed on a shared CT, exposed through a single hostname.
 
-> **Study the model, not the business.** This page uses Stuff8 to show how eco composes real, independent domains into a working estate.
+> **Study the model, not the business.** This page uses Stuff8 to show how Eco composes real, independent domains into a working estate.
 
 ## The composition
 
@@ -25,7 +25,7 @@ Ten independent repositories, each with its own contract, persistence, and runti
 
 ## One estate, ten languages stacks, one host
 
-The mix of runtimes shows eco's language-agnosticism in practice:
+The mix of runtimes shows Eco's language-agnosticism in practice:
 
 - **9 Rust services** (auth, photos, inventory, marketplace, bidding, chat, profile, rag + the frontend build toolchain)
 - **1 Go service** (notifications — a lean, connection-heavy WebSocket hub)

@@ -1,6 +1,8 @@
 # Getting Started
 
-eco is a private Node CLI that manages large-scale projects using Domain-Driven Design. It decomposes projects into independent, self-sustaining domains that can be reused and recomposed into new projects.
+Eco is a private Node CLI that manages large-scale projects using Domain-Driven Design. It decomposes projects into independent, self-sustaining domains that can be reused and recomposed into new projects.
+
+> **Eco is not released yet.** The public installer and distribution channels are coming soon. The commands below show what the workflow will look like; watch this space.
 
 ## Requirements
 
@@ -9,14 +11,21 @@ eco is a private Node CLI that manages large-scale projects using Domain-Driven 
 - git
 - A GitHub account with a personal access token (for creating and pushing repos)
 
-## Install
+## Install — coming soon
+
+Eco has not been released publicly yet. When it is, installation will be a single command — either through npm:
 
 ```bash
-git clone git@github.com:kelastanpatembok/ecology-ddd.git eco
-cd eco
-npm install
-npm link
+npm install -g eco
 ```
+
+or a direct installer script:
+
+```bash
+curl -fsSL https://get.eco.stuff8.com/install.sh | sh
+```
+
+Both are currently marked **COMING SOON**. Until then, Eco runs from source in development.
 
 Verify the install:
 
@@ -48,14 +57,14 @@ cd <project>
 eco up
 ```
 
-eco reads `ecompose.yml`, clones the composed domains, installs runtimes, wires `.env` files, and starts the services under PM2.
+Eco reads `ecompose.yml`, clones the composed domains, installs runtimes, wires `.env` files, and starts the services under PM2.
 
 ## Deploy to Proxmox
 
 On your Proxmox host:
 
 ```bash
-git clone git@github.com:kelastanpatembok/<project>_bootstrap.git /root/<project>_bootstrap
+git clone <your-estate-bootstrap-repo.git> /root/<project>_bootstrap
 cd /root/<project>_bootstrap
 eco up
 ```

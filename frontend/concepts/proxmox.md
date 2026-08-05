@@ -1,6 +1,6 @@
 # What is Proxmox?
 
-eco is built on **Proxmox VE** (Proxmox Virtual Environment) — an open-source virtualization platform that serves as the machine foundation for every eco estate.
+Eco is built on **Proxmox VE** (Proxmox Virtual Environment) — an open-source virtualization platform that serves as the machine foundation for every Eco estate.
 
 ## The short answer
 
@@ -16,14 +16,14 @@ Proxmox VE is a Debian-based operating system that turns a physical server into 
 Proxmox's LXC containers are **not Docker containers**. They run as normal processes on the host kernel, each with its own full userland (init, users, package manager, networking). Because there's no container daemon and no per-process overlay, CTs are:
 
 - extremely fast to start and stop
-- very light on memory (eco's CTs run whole estates in 4 GB)
+- very light on memory (Eco's CTs run whole estates in 4 GB)
 - predictable in resource use
 
-This is exactly the "host-native" property eco is built around: **services run as native processes inside a CT, not inside a container inside a CT.**
+This is exactly the "host-native" property Eco is built around: **services run as native processes inside a CT, not inside a container inside a CT.**
 
 ### 2. One CT is a full machine, not a process sandbox
 
-A CT is a *machine* — it has its own filesystem, its own users, its own network interfaces, its own systemd. For eco, the CT is the **machine boundary**:
+A CT is a *machine* — it has its own filesystem, its own users, its own network interfaces, its own systemd. For Eco, the CT is the **machine boundary**:
 
 ```
 +---------------------------------------------+
@@ -45,27 +45,27 @@ Proxmox ships with operational features that, in Docker/K8s land, are separate p
 
 - **Snapshots** — freeze a CT state in one click, roll back anytime
 - **Backups** — scheduled, deduplicated backups to any storage
-- **Cloning + templates** — eco provisions CTs from a prepared `eco-npm-rust-mongo` template; new estates spin up in minutes
+- **Cloning + templates** — Eco provisions CTs from a prepared `Eco-npm-rust-mongo` template; new estates spin up in minutes
 - **Clustering + live migration** — multiple Proxmox hosts form a cluster; CTs move between nodes with zero downtime
 - **Resource quotas** — CPU, memory, disk, and network per CT
-- **A real web UI + REST API** — eco drives CT lifecycle through the Proxmox API
+- **A real web UI + REST API** — Eco drives CT lifecycle through the Proxmox API
 
 ### 4. Built on proven open source
 
 Proxmox is Debian + KVM + LXC + Ceph (for clustered storage) + ZFS — all battle-tested open-source components, glued together by a management layer that is itself open source. No licensing fees, no per-CT costs.
 
-## Why eco chose it
+## Why Eco chose it
 
 | Requirement | Why Proxmox wins |
 | --- | --- |
 | Cheap application-scale isolation | LXC CTs are nearly free; one host runs many estates |
-| Reproducible environments | eco provisions CTs from templates + `provision.sh` |
-| Manageable by a CLI/API | eco drives CT create/config through the Proxmox API |
+| Reproducible environments | Eco provisions CTs from templates + `provision.sh` |
+| Manageable by a CLI/API | Eco drives CT create/config through the Proxmox API |
 | Agent-friendly iteration | CTs start/stop in seconds; no image pulls |
 | Operational safety | snapshots, backups, clustering built in |
 | Self-hosting, no lock-in | fully open source, runs on commodity hardware |
 
-## Where it fits in eco
+## Where it fits in Eco
 
 - **`ecompose.yml → ct` block** — declares the CT (id, hostname, template, storage, CPU, memory)
 - **`eco ct create`** — provisions the CT via the Proxmox API

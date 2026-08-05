@@ -9,7 +9,7 @@ This page walks through the actual command flow for a complete estate lifecycle.
 eco up
 ```
 
-This behaves like `docker compose up`. eco:
+This behaves like `docker compose up`. Eco:
 
 1. Reads `ecompose.yml` from the current directory
 2. Clones any missing composed domain repos

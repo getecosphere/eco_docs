@@ -38,7 +38,7 @@ Never commit these — they are CT-local generated state:
 - `ecosystem.config.js` / `ecosystem.config.cjs`
 - `Caddyfile`
 - `.env` files
-- `.eco/deploy/`
+- `.Eco/deploy/`
 
 ## Ports are per-estate by design
 

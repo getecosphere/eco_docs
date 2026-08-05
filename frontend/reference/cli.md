@@ -1,6 +1,6 @@
 # CLI Commands
 
-eco is a Node CLI (`eco`) with a bundled Bash implementation for workspace-side orchestration.
+Eco is a Node CLI (`Eco`) with a bundled Bash implementation for workspace-side orchestration.
 
 ## Setup commands
 
@@ -8,7 +8,7 @@ eco is a Node CLI (`eco`) with a bundled Bash implementation for workspace-side 
 | --- | --- |
 | `eco startproject` | Create + publish bootstrap and composition repos |
 | `eco init` | Initialize the DDD workspace |
-| `eco update` | Refresh the eco CLI to latest `origin/main` |
+| `eco update` | Refresh the Eco CLI to latest `origin/main` |
 | `eco show` | Show the composed project structure |
 
 ## Runtime commands
