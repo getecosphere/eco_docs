@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.env
+.eco-vite-preview.config.mjs
+.eco-vite-start.sh
+.eco-astro-preview.sh
+.eco-spring-boot-start.sh
+.DS_Store
