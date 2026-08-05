@@ -4,18 +4,24 @@ layout: home
 hero:
   name: eco
   text: Compose reusable domains into self-sustaining estates
-  tagline: A host-native DDD platform for Proxmox. Build once, reuse everywhere — with a Docker-like developer experience, no Docker required.
+  tagline: A host-native DDD platform for Proxmox. Build once, reuse everywhere — with a Docker-like developer experience, no Docker required. End-to-end, from a single developer to large teams, in the world of AI.
+  image:
+    src: /og-image.png
+    alt: eco
   actions:
     - theme: brand
       text: Get Started
       link: /guide/getting-started
+    - theme: alt
+      text: Why eco?
+      link: /why/eco-vs-docker
     - theme: alt
       text: Stuff8 Case Study
       link: /case-study/stuff8
 
 features:
   - title: Domains are reusable units
-    details: Independent, self-sustaining bounded contexts — auth, photos, chat, bidding — that can be recomposed into any new project.
+    details: Independent, self-sustaining bounded contexts — auth, photos, chat, bidding, rag — that can be recomposed into any new project.
   - title: Estates, not images
     details: One Proxmox CT is the machine boundary. An estate is the composition boundary. Services run natively, not in containers.
   - title: Docker-like workflow
@@ -26,4 +32,8 @@ features:
     details: Cloudflare tunnel → proxy CT → estate gateway → services. One public hostname per estate, managed by eco.
   - title: Webhook deploys
     details: Push to main and eco pulls, rebuilds, and reloads every service in the estate automatically.
+  - title: Any new staff can produce
+    details: Supporting domains are done already. New joiners compose veteran-designed contracts and ship — no years of hidden knowledge required.
+  - title: A complete, holistic solution
+    details: "From the ecology: not a single tool, but a self-sustaining system — domains, estates, environment, and orchestration working as one."
 ---

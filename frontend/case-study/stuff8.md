@@ -1,6 +1,6 @@
 # Case Study: Stuff8
 
-Stuff8 is a production estate built with eco — a **personal inventory system** whose inventory can optionally become a public marketplace. It demonstrates the full composition model: seven independent domains composed into one application, deployed on a shared CT, exposed through a single hostname.
+Stuff8 is a production estate built with eco — a **personal inventory system** whose inventory can optionally become a public marketplace. It demonstrates the full composition model: ten independent domains composed into one application, deployed on a shared CT, exposed through a single hostname.
 
 > **Study the model, not the business.** This page uses Stuff8 to show how eco composes real, independent domains into a working estate.
 
@@ -8,16 +8,30 @@ Stuff8 is a production estate built with eco — a **personal inventory system**
 
 Stuff8 composes these domains (from `repos.json`):
 
-| Domain | Role | Requires |
-| --- | --- | --- |
-| `auth` | Authentication system | — |
-| `photos` | S3/MinIO media storage | auth |
-| `inventory` | Personal asset management | auth, photos |
-| `marketplace` | Public projection of sellable items | auth, inventory, photos, notifications |
-| `bidding` | Offers, buyer selection, negotiation | auth, inventory, notifications |
-| `chat` | Realtime conversations | auth, photos, notifications |
-| `notifications` | In-app notifications + realtime | auth |
-| `stuff8_composition` | Astro.js frontend | auth, photos, inventory, marketplace, bidding, notifications |
+| Domain | Role | Requires | Stack |
+| --- | --- | --- | --- |
+| `auth` | Authentication system | — | Rust (axum) · MongoDB · JWT · bcrypt |
+| `photos` | S3/MinIO media storage | auth | Rust · MinIO/S3 · image processing |
+| `inventory` | Personal asset management | auth, photos | Rust · MongoDB |
+| `marketplace` | Public projection of sellable items | auth, inventory, photos, notifications | Rust · MongoDB |
+| `bidding` | Offers, buyer selection, negotiation | auth, inventory, notifications | Rust · MongoDB |
+| `chat` | Realtime conversations | auth, photos, notifications | Rust · MongoDB · Redis · WebSocket |
+| `notifications` | In-app notifications + realtime | auth | Go · MongoDB · WebSocket |
+| `profile` | User profile domain | auth | Rust · MongoDB |
+| `rag` | Estate-aware Q&A (DeepSeek grounding) | — | Rust (axum) · MongoDB · fastembed/ONNX |
+| `stuff8_composition` | Astro.js frontend | auth, photos, inventory, marketplace, bidding, notifications | Astro.js · Tailwind CSS · Node 20 |
+
+Ten independent repositories, each with its own contract, persistence, and runtime — composed into a single estate and deployed on **one** CT.
+
+## One estate, ten languages stacks, one host
+
+The mix of runtimes shows eco's language-agnosticism in practice:
+
+- **9 Rust services** (auth, photos, inventory, marketplace, bidding, chat, profile, rag + the frontend build toolchain)
+- **1 Go service** (notifications — a lean, connection-heavy WebSocket hub)
+- **1 Node.js/Astro frontend** (stuff8_composition)
+
+All of them run natively on CT 101 under PM2, share the same wiring model (ports, `.env`, gateway), and are managed by one `eco up`.
 
 ## Deployment flow
 
@@ -30,6 +44,8 @@ flowchart TD
         D[marketplace] --> G
         E[bidding] --> G
         F[chat] --> G
+        H[notifications] --> G
+        I[rag] --> G
         G[stuff8_composition]
     end
 
@@ -44,6 +60,8 @@ flowchart TD
         W --> S3[auth-backend]
         W --> S4[marketplace-backend]
         W --> S5[bidding-backend]
+        W --> S6[notifications-backend]
+        W --> S7[rag-backend]
     end
 
     S1 --> GATE[Caddy gateway<br/>internal port]
@@ -53,7 +71,7 @@ flowchart TD
 ```
 
 1. **Repos** — each domain lives in its own repository; `stuff8_composition` is the composition that pulls them together
-2. **ecompose.yml** — declares the estate: CT 101, the nine domains, nine services, the `stuff8.com` hostname
+2. **ecompose.yml** — declares the estate: CT 101, the ten domains, the services, the `stuff8.com` hostname
 3. **eco up** — provisions runtimes, clones domains, wires `.env` + ports + JWT, generates PM2 config, starts services
 4. **Gateway** — Caddy routes `/` to the frontend, `/auth-api/*` to auth, `/api/*` to the backends
 5. **Exposure** — Cloudflare Tunnel → proxy CT → gateway → services, all under one hostname
@@ -83,7 +101,9 @@ flowchart LR
 
 ## What this estate demonstrates
 
-- **Reusable domains** — `auth` and `photos` are not Stuff8-specific; they are composed into other estates too
+- **Reusable domains** — `auth`, `photos`, `chat`, `notifications`, and `rag` are not Stuff8-specific; they are composed into other estates too
+- **Pluggable capability** — the `rag` domain was added to an already-running estate by cloning it and adding two lines to `ecompose.yml`; no existing service changed
+- **Language-agnostic** — Rust, Go, and Node services coexist natively on one CT
 - **Shared CT** — CT 101 hosts multiple estates, each with its own ports, `.env`, PM2 processes, and databases
 - **One hostname** — external traffic is `stuff8.com`, with `photos.stuff8.com` as an `expose.additional` for the media backend
 - **Webhook deploys** — push to `main` on any composed repo triggers an estate-wide redeploy
