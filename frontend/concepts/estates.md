@@ -42,11 +42,21 @@ Never commit these — they are CT-local generated state:
 
 ## Ports are per-estate by design
 
-- **Service ports**: allocated random free ports on first prod deploy, preserved via `.configure-state`
-- **Gateway port**: each estate's Caddy gateway binds a distinct internal port (never public 80)
-- **Webhook port**: each estate's GitHub deploy receiver gets its own free private port
+- **Service ports**: allocated random free ports in 20000–27999 on first prod
+  deploy, preserved forever via the **resource registry** (see [The Resource
+  Registry](/concepts/registry)). Dev-port examples in `.env.example` (e.g.
+  `SERVER_PORT=8080`) are never a reason to pin a fresh estate to a well-known
+  port.
+- **Gateway port**: each estate's Caddy gateway binds a distinct internal port
+  (never public 80), allocated from the registry.
+- **Webhook port**: each estate's GitHub deploy receiver gets its own free
+  private port in 20000–27999, persisted in `.eco/deploy/github-webhook.json`
+  or set explicitly with `deploy.github.webhook_port`.
 
-Port uniqueness is a **CT-wide** concern — every service, gateway, and webhook port across all estates on one CT must be distinct.
+Port uniqueness is a **CT-wide** concern — every service, gateway, and webhook
+port across all estates on one CT must be distinct. The registry's
+`(scope, port)` unique index enforces this: a port is allocated once and
+returned unchanged on every later run.
 
 ## Databases are multi-tenant by project
 

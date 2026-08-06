@@ -93,6 +93,7 @@ export default withMermaid(
             items: [
               { text: 'Domains', link: '/concepts/domains' },
               { text: 'Estates', link: '/concepts/estates' },
+              { text: 'The Resource Registry', link: '/concepts/registry' },
               { text: 'Composition', link: '/concepts/composition' },
               { text: 'Scaling', link: '/concepts/scaling' },
               { text: 'CI/CD — built in', link: '/concepts/cicd' },
