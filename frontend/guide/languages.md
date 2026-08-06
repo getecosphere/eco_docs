@@ -28,14 +28,16 @@ Node.js (v20) is the runtime for every frontend and composition app. Eco's own C
 
 <img src="/langs/typescript.svg" width="48" height="48" alt="TypeScript logo" style="float:left;margin:0 16px 16px 0" />
 
-TypeScript is used across the Eco frontend ecosystem — in **Astro.js** composition apps, **Next.js** platform apps, and the **VitePress** docs site you're reading now.
+TypeScript is used across the Eco frontend ecosystem — in **Nuxt.js** composition apps, **Astro.js** composition apps, **Next.js** platform apps, and the **VitePress** docs site you're reading now.
 
 ## JavaScript frameworks commonly composed
 
+<img src="/langs/nuxt.svg" width="48" height="48" alt="Nuxt logo" style="float:left;margin:0 16px 16px 0" />
 <img src="/langs/astro.svg" width="48" height="48" alt="Astro logo" style="float:left;margin:0 16px 16px 0" />
 <img src="/langs/nextjs.svg" width="48" height="48" alt="Next.js logo" style="float:left;margin:0 16px 16px 0" />
 <img src="/langs/tailwindcss.svg" width="48" height="48" alt="Tailwind CSS logo" style="float:left;margin:0 16px 16px 0" />
 
+- **Nuxt.js + Vue** — supported composition frontend framework; run as a dev server (`npm run dev`) under PM2 during development and built for production with `nuxt build`. Used by the Ecosphere platform.
 - **Astro.js + Tailwind CSS** — the primary frontend stack for Eco composition apps (e.g. Stuff8)
 - **Next.js + React** — used for platform and legacy LMS frontends
 - **Tailwind CSS** — the shared styling foundation
