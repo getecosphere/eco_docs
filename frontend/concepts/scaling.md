@@ -1,6 +1,14 @@
 # Scaling
 
-This model scales, but differently from Kubernetes-style infrastructure.
+This model scales, but differently from Kubernetes-style infrastructure. And it starts much, much smaller.
+
+## Start small: the mini PC
+
+Eco estates have been stress-tested to **5,000 concurrent users with zero failures** on a $300 Intel i3-1220P mini PC with 7.3 GiB of RAM, running five production estates simultaneously on one Proxmox host behind a consumer ISP connection. You do not need a data center. You do not need a cloud bill. You need a machine and Eco.
+
+When you outgrow the mini PC — and you will, if your users grow — you add a second one. Or a VPS. Or move to colocated hardware. Eco's scaling model makes each transition a matter of adding infrastructure, not rewriting the application. The estate stays the same; only the machine boundary changes.
+
+See the [stress testing report](/case-study/stress-test) for the full methodology and raw data.
 
 ## The scaling unit is the estate
 

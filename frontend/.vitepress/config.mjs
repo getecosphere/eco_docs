@@ -61,7 +61,7 @@ export default withMermaid(
         { text: 'Why Eco', link: '/why/eco-vs-docker' },
         { text: 'Concepts', link: '/concepts/domains' },
         { text: 'Reference', link: '/reference/ecompose' },
-        { text: 'Case Study', link: '/case-study/stuff8' },
+        { text: 'Case Study', link: '/case-study/stress-test' },
         { text: 'Contact', link: '/contact' }
       ],
       sidebar: {
@@ -112,10 +112,13 @@ export default withMermaid(
             ]
           }
         ],
-        '/case-study/': [
+         '/case-study/': [
           {
             text: 'Case Study',
-            items: [{ text: 'Stuff8', link: '/case-study/stuff8' }]
+            items: [
+              { text: 'Stuff8', link: '/case-study/stuff8' },
+              { text: 'Stress Testing at Scale', link: '/case-study/stress-test' }
+            ]
           }
         ],
         '/contact/': [

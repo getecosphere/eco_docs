@@ -108,6 +108,17 @@ flowchart LR
 - **One hostname** — external traffic is `stuff8.com`, with `photos.stuff8.com` as an `expose.additional` for the media backend
 - **Webhook deploys** — push to `main` on any composed repo triggers an estate-wide redeploy
 
+## Stress tested to 5,000 concurrent users
+
+Stuff8 was penetration-tested at 1,000 → 5,000 concurrent virtual users on the same $300 mini PC that runs it in production. Results:
+
+| VUs | Avg | Failures | Req/s |
+|---|---|---|---|
+| 1,000 | 288ms | 0% | 2,767 |
+| 5,000 | 1,601ms | 0% | 1,920 |
+
+Ten Rust services, one Go service, one Astro frontend, zero failures at 5,000 concurrent users on shared hardware. The full methodology and raw data — including a direct Rust-vs-Java comparison on the same machine — is in the [Stress Testing at Scale](/case-study/stress-test) report.
+
 ## Try it live
 
 The estate is deployed at **https://stuff8.com**. `eco up` built it from the `stuff8_bootstrap` manifest and the composed domains above.

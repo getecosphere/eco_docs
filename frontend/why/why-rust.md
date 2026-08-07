@@ -73,7 +73,23 @@ Eco's rule of thumb: Node for the browser and CLI tooling, Rust for the services
 
 ### Rust vs Java
 
-Eco inherited Java services from its legacy monolith — and is steadily rewriting them in Rust.
+Eco inherited Java services from its legacy monolith — and is steadily rewriting them in Rust. The numbers from real production testing make the case undeniable.
+
+**August 2026 stress test — same hardware, same CT, same load generator, two production estates:**
+
+| Metric | Stuff8 (Rust) | Legacy Java Application | Advantage |
+|---|---|---|---|
+| Avg latency at 1,000 VUs | **288ms** | 403ms | Rust 29% faster |
+| Avg latency at 3,000 VUs | **959ms** | 1,204ms | Rust 20% faster |
+| Avg latency at 5,000 VUs | **1,601ms** | 2,005ms | Rust 20% faster |
+| Max throughput | **2,767 req/s** | 1,982 req/s | Rust 40% higher |
+| Max bandwidth | **45.8 MB/s** | 32.8 MB/s | Rust 40% higher |
+| Per-service memory (idle) | **4–13 MB** | 225–359 MB | Rust 20–90x smaller |
+| Startup time | **<100ms** | 13–22 seconds | Rust 130–220x faster |
+| Services in the estate | 10 domains | 6 domains | — |
+| Failures at 5,000 VUs | **0%** | 0.2% | Both stable |
+
+These are not synthetic benchmarks. Both estates run on the same Intel i3-1220P mini PC (7.3 GiB RAM) under Proxmox, sharing CT 101 with three other production estates. The Rust estate (Stuff8) has **ten independent domains**; the Java application has six. Stuff8's ten Rust backends consume ~70 MB total. The Java application's two Spring Boot services alone consume ~584 MB.
 
 | Concern | Rust | Java 17 |
 | --- | --- | --- |
@@ -84,8 +100,14 @@ Eco inherited Java services from its legacy monolith — and is steadily rewriti
 | Boilerplate | minimal | verbose (getters, config) |
 | Learning curve | steep without AI | gentle |
 | AI productivity | excellent | excellent |
+| **Observed throughput advantage** | **+40%** | baseline |
+| **Observed memory advantage** | **20–90x smaller** | baseline |
 
 Java's cost problem is the reason Eco exists at all in one sense: the old Spring Boot auth service was a heavyweight general-purpose stack for what should be the lightest, most reusable domain in the estate. Rewriting it in Rust corrected both the cost and the domain boundary.
+
+> **The 514 MB gap.** On a mini PC running five estates simultaneously, the Java application's two Spring Boot services alone consume 584 MB. Stuff8's ten Rust services consume 70 MB. That 514 MB difference is more than the entire memory allocation of a typical small CT. Rust does not just run faster — it **makes room** for more domains, more estates, more customers, on the same hardware.
+
+See the [full stress testing report](/case-study/stress-test) for methodology, raw data, and the Cloudflare tunnel optimization that enabled these results.
 
 ### Rust vs Python
 
