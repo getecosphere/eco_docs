@@ -118,7 +118,8 @@ export default withMermaid(
             items: [
               { text: 'Stuff8', link: '/case-study/stuff8' },
               { text: 'Stress Testing at Scale', link: '/case-study/stress-test' },
-              { text: 'Single-Binary Rust', link: '/case-study/single-binary-stress-test' }
+              { text: 'Single-Binary Rust', link: '/case-study/single-binary-stress-test' },
+              { text: 'Keeping Multi-Binary', link: '/case-study/keeping-multi-binary' }
             ]
           }
         ],
