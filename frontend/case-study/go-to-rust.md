@@ -105,6 +105,8 @@ Three processes (binary, frontend, gateway) instead of twelve. `pm2 ls` went fro
 
 At ~500 lines with identical MongoDB schemas and JWT verification, the conversion took hours, not days or weeks. For any future domain where Go is a better fit (e.g., a connection-heavy real-time service that is NOT going to be part of a single binary), the cost of rewriting in Rust later — or the reverse — is trivially low.
 
+> Why is Go better for connection-heavy real-time services? Go's goroutine model lets you write `for { conn.ReadMessage() }` without an event loop or `select!`. Each of 10,000 concurrent WebSocket connections is a goroutine that blocks on reads. The Go runtime multiplexes them onto a handful of OS threads transparently. In Rust you need `tokio::select!` with a `FuturesUnordered` spawn-per-connection, or an actor model — either way, more ceremony than a `for` loop. For a pure real-time hub with no single-binary requirement, Go's goroutine-per-connection is the simpler, safer, and more readable pattern.
+
 ---
 
 ## What was lost

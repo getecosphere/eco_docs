@@ -121,7 +121,8 @@ export default withMermaid(
               { text: 'Stress Testing at Scale', link: '/case-study/stress-test' },
               { text: 'Single-Binary Rust', link: '/case-study/single-binary-stress-test' },
               { text: 'Go → Rust Conversion', link: '/case-study/go-to-rust' },
-              { text: 'Keeping Multi-Binary', link: '/case-study/keeping-multi-binary' }
+              { text: 'Keeping Multi-Binary', link: '/case-study/keeping-multi-binary' },
+              { text: 'Future Scaling Features', link: '/case-study/future-scaling-features' }
             ]
           }
         ],

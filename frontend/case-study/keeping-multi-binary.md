@@ -66,53 +66,11 @@ The only reason this is possible: every domain exposes a `bootstrap()` → `Rout
 
 ---
 
-## How eco enables service-level scaling
+## Service-level scaling
 
-In multi-binary mode, eco can scale individual services independently.
+In multi-binary mode, eco can scale individual services independently — horizontal (more instances), vertical (more CPU/memory), and eventually automatic (a policy sidecar reading PM2 metrics). The full design, including how Caddy sticky sessions handle stateful WebSocket domains and why HTTP loopback is the enabler, has its own page:
 
-### Horizontal (more instances)
-
-A `scale` block in `ecompose.yml` declares replicas:
-
-```yaml
-services:
-  marketplace-backend:
-    path: marketplace/backend
-    scale:
-      instances: 3
-      across: any
-    runtimes:
-      - rust
-      - mongodb@7
-```
-
-Eco clones the repo onto each target CT, builds the binary, writes a per-instance `.env`, and regenerates the Caddy upstream with all instance addresses. Because every domain talks HTTP, the load-balanced `marketplace-backend` looks like one service to every other domain — no code change anywhere.
-
-### Vertical (more resources per instance)
-
-```yaml
-services:
-  marketplace-backend:
-    scale:
-      cpu: 4
-      memory: 2048
-```
-
-Eco adjusts the CT's resource limits. No domain code changes.
-
-### Auto-scaling (designed, not built)
-
-The primitives are in place:
-
-1. PM2 already emits per-process CPU/memory (`pm2 ls` — used in deploy webhook health checks)
-2. `eco scale <service> +1` deploys a new replica
-3. Caddy reloads the upstream with zero downtime
-
-The missing piece is a policy sidecar that reads PM2 metrics every 30 seconds and fires scale events. With multi-binary HTTP loopback, a new replica joins the upstream and traffic flows immediately — no in-process wiring to update.
-
-::: tip Single-binary = single scale point
-With `target_mode: single-binary`, you scale the whole estate or nothing. For small estates serving a few thousand users on a $300 mini PC, that is fine. For estates where one domain spikes independently, run multi-binary and add `scale:` blocks for that domain.
-:::
+[Future Scaling Features](/case-study/future-scaling-features)
 
 ---
 
