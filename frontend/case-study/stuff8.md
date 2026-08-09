@@ -27,11 +27,10 @@ Ten independent repositories, each with its own contract, persistence, and runti
 
 The mix of runtimes shows Eco's language-agnosticism in practice:
 
-- **9 Rust services** (auth, photos, inventory, marketplace, bidding, chat, profile, rag + the frontend build toolchain)
-- **1 Go service** (notifications — a lean, connection-heavy WebSocket hub)
+- **10 Rust services** (auth, photos, inventory, marketplace, bidding, chat, profile, notifications, rag + the frontend build toolchain)
 - **1 Node.js/Astro frontend** (stuff8_composition)
 
-All of them run natively on CT 101 under PM2, share the same wiring model (ports, `.env`, gateway), and are managed by one `eco up`.
+All of them run natively on CT 101 under PM2, share the same wiring model (ports, `.env`, gateway), and are managed by one `eco up`. Stuff8 runs in **multi-binary mode**: each domain is its own release binary and PM2 process, so services can be scaled and restarted independently.
 
 ## Deployment flow
 
@@ -117,8 +116,22 @@ Stuff8 was penetration-tested at 1,000 → 5,000 concurrent virtual users on the
 | 1,000 | 288ms | 0% | 2,767 |
 | 5,000 | 1,601ms | 0% | 1,920 |
 
-Ten Rust services, one Go service, one Astro frontend, zero failures at 5,000 concurrent users on shared hardware. The full methodology and raw data — including a direct Rust-vs-Java comparison on the same machine — is in the [Stress Testing at Scale](/case-study/stress-test) report.
+Ten Rust services and one Astro frontend, zero failures at 5,000 concurrent users on shared hardware. The full methodology and raw data — including a direct Rust-vs-Java comparison on the same machine — is in the [Stress Testing at Scale](/case-study/stress-test) report.
+
+## Two footprints: prod and staging
+
+Stuff8 also demonstrates Eco's **prod/staging workflow**. The estate declares a
+staging footprint in `ecompose.yml`, so it runs two deployments from the same
+manifest:
+
+- **Production** — https://stuff8.com (CT 101)
+- **Staging** — https://staging.stuff8.com (CT 1000)
+
+A push to a feature branch deploys to staging; a push to `main` deploys to
+production. See the [Prod & Staging Workflow](/guide/prod-staging-workflow).
 
 ## Try it live
 
-The estate is deployed at **https://stuff8.com**. `eco up` built it from the `stuff8_bootstrap` manifest and the composed domains above.
+The estate is deployed at **https://stuff8.com**, with the staging preview at
+**https://staging.stuff8.com**. `eco up` built them from the
+`stuff8_bootstrap` manifest and the composed domains above.

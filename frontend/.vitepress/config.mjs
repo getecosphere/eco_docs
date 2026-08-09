@@ -71,6 +71,7 @@ export default withMermaid(
             items: [
               { text: 'Getting Started', link: '/guide/getting-started' },
               { text: 'Quick Start', link: '/guide/quick-start' },
+              { text: 'Prod & Staging Workflow', link: '/guide/prod-staging-workflow' },
               { text: 'Supported Languages', link: '/guide/languages' }
             ]
           }

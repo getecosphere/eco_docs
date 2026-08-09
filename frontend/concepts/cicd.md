@@ -25,15 +25,36 @@ From that moment, the deploy pipeline runs itself.
 ## The deploy loop
 
 ```
-push to main ──> GitHub webhook ──> estate receiver ──> debounce ──> estate redeploy
+push to main ──────> prod webhook ──> estate receiver ──> debounce ──> prod redeploy
+push to feature/* ─> staging webhook ─> staging receiver ─> debounce ──> staging redeploy
 ```
 
-1. A developer pushes to `main` on any composed repo
-2. GitHub fires the webhook to the estate's receiver
+1. A developer pushes to `main` (prod) or a feature branch (staging) on any composed repo
+2. GitHub fires the webhook to the matching estate receiver
 3. Eco **debounces** — it waits `debounce_ms` (default 15 s) so a burst of pushes collapses into one deploy
-4. Eco pulls the **latest code across every repo** in the estate (not just the triggering repo)
+4. Eco pulls the **latest code across every repo** in the estate (not just the triggering repo); a staging deploy checks out the pushed feature branch in the repos that have it
 5. Rust services run their tests (`cargo test`); a service with failing tests keeps its last-good build instead of breaking the estate
 6. PM2 reloads the services; the gateway and exposure are already correct
+
+## Staging footprint
+
+An estate can declare a second **staging** deployment that receives pushes to
+any branch **except** the production deploy branch:
+
+```yaml
+deploy:
+  github:
+    enabled: true
+    branch: main
+
+staging:
+  ct: 1000
+```
+
+`eco up` provisions both footprints and registers **two** webhooks per repo:
+one fixed to `main` (prod), one accepting any other branch (staging). A
+feature branch push deploys to `staging-<hostname>`; a `main` push deploys to
+production. See the [Prod & Staging Workflow](/guide/prod-staging-workflow).
 
 ## What you don't have to do
 
