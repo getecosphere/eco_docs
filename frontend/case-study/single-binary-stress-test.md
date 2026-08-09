@@ -86,16 +86,11 @@ The homepage test primarily stresses the Astro frontend + Caddy gateway, not the
 
 ## The Go → Rust Conversion
 
-The original `notifications` service was a ~500-line Go application providing:
+The original `notifications` service was a ~500-line Go WebSocket hub — the last non-Rust domain in the Stuff8 estate. Rewriting it in Rust removed the final Go dependency and enabled full single-binary composition.
 
-- Persistent notification storage in MongoDB
-- REST API for listing, counting, marking read, and ingesting from other domains
-- Real-time WebSocket push via an in-memory per-user connection hub
-- JWT authentication (HS512, shared across the estate)
+The full story — including side-by-side code comparison of Go's goroutines vs Rust's async/await, what was gained and lost, and when Go is still the right choice — is on its own page:
 
-The Rust rewrite is functionally identical — same API contract, same MongoDB collections, same WebSocket protocol, same JWT verification. It compiles into the single binary as a library crate exporting `bootstrap()` alongside every other domain.
-
-**Why this matters:** In a multi-binary world, Go was a perfectly fine choice — small binary, fast startup, great concurrency. In a single-binary world, Go can't join the party. Every domain must be Rust so the shim crate can link them all. The notifications conversion was the final step to a fully unified Rust estate.
+[The Go → Rust Conversion](/case-study/go-to-rust)
 
 ---
 

@@ -40,7 +40,7 @@ So the historical trade-off — *"Rust is smallest but hardest"* — collapses i
 
 ### Rust vs Go
 
-Both compile to small native binaries. Eco uses Go for one domain today (`notifications` — a connection-heavy WebSocket hub) and Rust for most others.
+Both compile to small native binaries. Eco's Stuff8 estate originally ran one Go domain (`notifications` — a connection-heavy WebSocket hub) alongside 8 Rust domains. It was [rewritten in Rust](/case-study/go-to-rust) to enable single-binary composition — but Go remains a first-class Eco runtime and a strong choice for standalone services.
 
 | Concern | Rust | Go |
 | --- | --- | --- |
@@ -108,6 +108,49 @@ Java's cost problem is the reason Eco exists at all in one sense: the old Spring
 > **The 514 MB gap.** On a mini PC running five estates simultaneously, the Java application's two Spring Boot services alone consume 584 MB. Stuff8's ten Rust services consume 70 MB. That 514 MB difference is more than the entire memory allocation of a typical small CT. Rust does not just run faster — it **makes room** for more domains, more estates, more customers, on the same hardware.
 
 See the [full stress testing report](/case-study/stress-test) for methodology, raw data, and the Cloudflare tunnel optimization that enabled these results.
+
+---
+
+## Who uses Rust
+
+Rust crossed the language barrier from "enthusiast project" to "production infrastructure" faster than almost any language in history. Some of the world's largest-scale systems now depend on it:
+
+| Company | What | Why Rust |
+|---|---|---|
+| **Amazon AWS** | Firecracker (Lambda's microVM engine), Bottlerocket (container OS) | "Rust gives us the performance of C with memory safety." Firecracker runs millions of Lambda invocations per second. |
+| **Discord** | Read States service | Switched from Go to Rust after Go's garbage collector caused 2-minute latency spikes under load. Rust's version uses 10x less memory. |
+| **Cloudflare** | Pingora proxy (replaced nginx) | Handles over 1 billion requests per day. Rust eliminated the C memory bugs that caused periodic nginx crashes. |
+| **Dropbox** | Magic Pocket (exabyte-scale storage) | Rewrote the sync engine from Python to Rust for predictable latency and 2x throughput. |
+| **Microsoft** | Windows kernel, Azure infrastructure | Microsoft is the second-largest corporate contributor to Rust. Windows 11 includes Rust in the kernel. |
+| **Google** | Android (new Bluetooth stack, Keystore 2.0), Fuchsia OS | Android's Rust adoption cut memory safety vulnerabilities by 68% (2022 report). |
+| **Meta** | Source control backend (Mononoke, Sapling) | Replaced Mercurial infrastructure with Rust-based services — "Rust makes refactoring safe." |
+| **Mozilla** | Firefox (Stylo CSS engine, WebRender) | Where Rust was born. Stylo was the first major Rust deployment in a consumer product — "we shipped it because it was faster and crashed less." |
+
+---
+
+## Rust in the Linux kernel
+
+In December 2022, Linux 6.1 became the first kernel release with Rust support merged into mainline. This was the culmination of years of work, driven by Google's Android team and endorsed by Linus Torvalds himself.
+
+- **6.1 (Dec 2022)**: Initial Rust infrastructure merged — a few thousand lines of scaffolding, no real drivers yet
+- **6.8 (Mar 2024)**: The first real Rust driver lands — the Asahi Linux GPU driver for Apple M1/M2 chips (written by Lina of Asahi Lina fame)
+- **6.13 (Jan 2025)**: Multiple Rust drivers in-tree, including the Android Binder IPC driver rewrite
+
+The goal is not to rewrite the kernel. It is to make *new* kernel code safer. Two-thirds of all kernel vulnerabilities are memory bugs. Rust eliminates that class of bug at compile time without a runtime cost. The debate among kernel maintainers continues, but the code is in mainline and growing.
+
+---
+
+## Trivia
+
+- **The name**: Graydon Hoare named Rust after a family of fungi that are "over-engineered for survival" — fitting for a language that refuses to let you write a use-after-free.
+- **Rust's birth**: Hoare started Rust as a side project at Mozilla Research in 2006. It became a Mozilla-sponsored project in 2009 and hit 1.0 stable on **May 15, 2015** — nine years from idea to production-ready.
+- **The mascot**: Ferris the crab. Crabs are known for being tough and hard-shelled — like Rust's safety guarantees. The community calls themselves "Rustaceans."
+- **Stack Overflow's most loved**: Every single year from 2016 through 2024, Rust topped Stack Overflow's "most loved language" survey. No other language has held the title for 9 consecutive years.
+- **The Rust Foundation**: Mozilla spun out Rust's governance into an independent non-profit in 2021, backed by AWS, Google, Huawei, Microsoft, and Meta. Rust is now a community-owned language.
+- **TIOBE index**: Rust entered the top 20 in 2020 and reached #13 by early 2024 — passing Go, Ruby, and Swift in some months.
+- **`cargo` is a pun**: Rust's package manager is named after "cargo" (shipping goods), but also a play on "C/C++ on Cargo" — the idea that Rust lifts C/C++ projects to a safer target.
+
+---
 
 ### Rust vs Python
 

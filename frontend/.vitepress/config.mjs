@@ -81,6 +81,7 @@ export default withMermaid(
             items: [
               { text: 'Eco vs Docker', link: '/why/eco-vs-docker' },
               { text: 'Why Eco promotes Rust', link: '/why/why-rust' },
+              { text: 'Why Golang?', link: '/why/why-golang' },
               { text: 'The end-to-end model', link: '/why/end-to-end' },
               { text: 'The story behind Eco', link: '/why/story' },
               { text: 'Why the name "Eco"', link: '/why/the-name' }
@@ -119,6 +120,7 @@ export default withMermaid(
               { text: 'Stuff8', link: '/case-study/stuff8' },
               { text: 'Stress Testing at Scale', link: '/case-study/stress-test' },
               { text: 'Single-Binary Rust', link: '/case-study/single-binary-stress-test' },
+              { text: 'Go → Rust Conversion', link: '/case-study/go-to-rust' },
               { text: 'Keeping Multi-Binary', link: '/case-study/keeping-multi-binary' }
             ]
           }
