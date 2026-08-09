@@ -77,7 +77,59 @@ This is why the cross-domain HTTP loopback is kept: it is the same protocol whet
 
 ---
 
-## What about stateful domains?
+## How Docker and Kubernetes do it — and how eco differs
+
+The industry standard for scaling services is container orchestration, most commonly Docker (Swarm or standalone) and Kubernetes. Eco takes a different path: native binaries on Proxmox CTs, managed by PM2. Here is the technical comparison — not a competition, but a clear picture of what each approach actually does.
+
+### Unit of deployment
+
+| | Docker / Kubernetes | Eco |
+|---|---|---|
+| What gets deployed | An OCI container image — a tarball of the entire root filesystem (OS userspace, glibc, Node/JVM/Go runtime, `node_modules`, app code). A typical Node container is 150–400 MB compressed. | A single native binary (Rust: 1–31 MB; Go: 10–20 MB) or a Node project repo with `node_modules` on the CT's shared filesystem. No filesystem duplication. |
+| Startup | Container runtime pulls the image, unpacks layers, creates namespaces, starts the process. Cold start: seconds (pull + unpack). Warm start: ~1s. | PM2 forks the process. Cold start: `cargo build` or `go build` first (minutes). Warm start: milliseconds — binary is already on disk, PM2 just execs it. |
+| Build step | `docker build` produces the image, pushed to a registry (Docker Hub, ECR, GCR, self-hosted). CI pipeline must build + push. | `cargo build --release` or `go build` on the CT. No registry. `eco up` builds in place and restarts PM2. |
+
+### Orchestration
+
+| | Docker / Kubernetes | Eco |
+|---|---|---|
+| Control plane | kube-apiserver → etcd → kube-controller-manager → kube-scheduler. A distributed consensus system running across 3+ master nodes. | PM2 on each CT, plus a central deploy webhook that receives GitHub pushes and runs `eco up`. No distributed consensus — PM2 is a local process manager. |
+| Declarative state | `kubectl apply -f deployment.yaml` — the control plane continuously reconciles desired state with actual state. This is Kubernetes's core idea: a reconciliation loop. | `ecompose.yml` declares the estate topology. `eco up` reads it and converges in one pass (provision CTs, clone repos, build, write configs, start PM2). No continuous reconciliation — changes are event-driven (webhook on push). |
+| Scheduling | kube-scheduler scores every node (CPU/memory available, affinity/anti-affinity, taints/tolerations) and picks the best one. A pod's `spec.nodeName` is only set after scheduling. | Eco places a service on a CT based on `ecompose.yml` domain assignments. There is no dynamic scheduler — the developer declares which CT a domain lives on. `scale.across: any` tells eco to pick any CT with capacity. Simple, manual, predictable. |
+
+### Service discovery and networking
+
+| | Docker / Kubernetes | Eco |
+|---|---|---|
+| Service identity | Every pod gets a unique cluster IP and a DNS name (`service.namespace.svc.cluster.local`). kube-proxy maintains iptables/ipvs rules to route virtual IPs to pod IPs. DNS updates are handled by CoreDNS, watching the API server. | A domain is identified by its PM2 process name and its TCP port on the CT. Caddy is the L7 reverse proxy — it maps hostnames to `127.0.0.1:{port}` or remote CT IPs. No virtual IPs, no iptables rules, no DNS-based discovery. |
+| Load balancing | kube-proxy (L3/L4) distributes across pod IPs. An Ingress controller (nginx-ingress, traefik, Caddy) adds L7 routing. Two layers of balancing by default. | Caddy alone — L7 reverse proxy with round-robin across upstreams. Caddy also handles TLS termination, header-based sticky sessions, and HTTP→HTTPS redirects. One layer, one config file. |
+| Network overlay | CNI plugins (flannel, calico, cilium) build an overlay network so pods on different nodes can reach each other by IP. This adds encapsulation overhead (VXLAN, Geneve) unless using BGP-based CNI. | No overlay. All CTs share the Proxmox host's bridge (`vmbr0`). A service on CT A reaches a service on CT B via the physical bridge — same IP, no encapsulation. |
+
+### Auto-scaling
+
+| | Docker / Kubernetes | Eco |
+|---|---|---|
+| Horizontal Pod Autoscaler (HPA) | Built into the control plane. Metrics-server collects pod CPU/memory via the kubelet's cAdvisor. HPA queries the metrics API every 15s and computes `desiredReplicas = ceil(currentReplicas * currentMetric / targetMetric)`. Scale-up is capped at 2x per 15s interval to prevent flapping. Scale-down has a 5-minute stabilization window. HPA can also use custom metrics (Prometheus, Datadog) via the external metrics API. | Designed as a policy sidecar. PM2 emits per-process CPU/memory (`pm2 ls`). The sidecar reads it every 30s and fires `eco scale <service> ±1`. Thresholds: scale-up at >80% for 2 windows, scale-down at <20% for 5 windows. No external metrics API yet — the design is intentionally simpler than HPA because the process count is an order of magnitude smaller. |
+| Vertical Pod Autoscaler (VPA) | Recommends or auto-updates pod resource requests/limits based on historical usage. Uses a recommender → updater → admission controller pipeline. Pods are evicted and rescheduled to apply changes. | `scale.cpu` and `scale.memory` in `ecompose.yml` adjust the CT's Proxmox resource limits directly — no eviction, just a CT config update and PM2 restart. The domain process sees the new cgroup limits natively. |
+| Event-driven scaling (KEDA) | KEDA (Kubernetes Event-Driven Autoscaling) scales pods based on external event sources — Kafka topic lag, Redis list length, cron schedules, cloud provider metrics. It can scale to zero (no pods running) and back up when an event arrives. | Not needed at eco's current scale. Eco's domains are always-on HTTP services, not event consumers. If a domain needs it later (e.g., a batch processor), a cron-based scale-to-1 and PM2 idle-exit pattern achieves the same with no external deps. |
+| Node auto-scaling (Cluster Autoscaler) | When pods can't be scheduled because of insufficient cluster resources, the Cluster Autoscaler provisions a new VM (via cloud provider API) and joins it to the cluster. | When CT capacity runs out, eco can provision a new Proxmox CT from a template (`vztmpl/eco-npm-rust-mongo_...`), install dependencies, and add it to the estate. The CT template is pre-built with the tools the estate needs (Rust, Node, MongoDB). This is `scale.across: any` — if no existing CT has room, eco provisions a new one. |
+
+### Isolation boundary
+
+| | Docker / Kubernetes | Eco |
+|---|---|---|
+| Process isolation | Linux namespaces (pid, net, mnt, uts, ipc, user) + cgroups per container. Shared kernel. A kernel panic in one container panics the whole node. | Proxmox CT (LXC) — also namespaces + cgroups, but with AppArmor/SELinux profiles and seccomp filters that the Proxmox hypervisor configures. Still a shared kernel, but Proxmox's LXC integration is older and more battle-hardened than Docker's default profile. |
+| Resource limits | Kubernetes `resources.requests` and `resources.limits` — the kubelet enforces them via cgroups. CPU is compressible (throttled, not killed). Memory is incompressible — exceed the limit and the pod is OOM-killed. | Proxmox CT resource limits (`cores`, `memory`, `swap`) set in `ecompose.yml`. The hypervisor enforces them via cgroups at the CT level. Same compressibility rules: CPU throttled, memory OOM-killed. The difference: a CT is a whole OS, so OOM-killing a CT kills every process inside it — all the estate's domains, not just one service. |
+| Security boundary | A container breakout is a Linux kernel exploit — rare but catastrophic when it happens. Root in a container is the same root as the host (unless user namespaces are enabled, which is uncommon). | A CT breakout is also a kernel exploit. Proxmox's unprivileged CTs (`unprivileged: 1` in `ecompose.yml`) map root inside the CT to a high UID on the host (e.g., 100000) — escaping root-in-CT to root-on-host requires a kernel exploit AND a UID-mapping bypass. Marginally harder than Docker. Neither is a VM-level isolation. |
+
+### Pros and cons summary
+
+| | Docker / Kubernetes | Eco |
+|---|---|---|
+| **Pros** | Industry-standard API (any dev knows `kubectl`), massive ecosystem (Helm charts, operators, ingress controllers, monitoring stacks), cloud-provider-agnostic deployment, fine-grained pod-level resource isolation, HPA is built-in and battle-tested at global scale, KEDA scales to zero | No container overhead (no image pull, no registry, no overlay network), native binary size (1–31 MB vs 150–400 MB images), L7 routing in one Caddyfile instead of Ingress + kube-proxy, Proxmox CT isolation is stronger than default Docker, process count is small enough that `pm2 ls` replaces an observability stack, single-machine deployment works (no cluster required) |
+| **Cons** | Operational complexity — a production cluster needs etcd, control plane, CNI, CSI, load balancer integration, cert-manager, logging/monitoring stack. A team of one cannot responsibly run Kubernetes in production at 2 AM. The minimum viable cluster for reliability is 3 nodes. Image pull at scale is slow without a local registry cache. | No continuous reconciliation — `eco up` is event-driven, so config drift is not auto-healed. PM2 is local per-CT, no cluster-wide process view. No equivalent of Helm/Kustomize for templating. Scaling to zero is not yet implemented. No community ecosystem of pre-built charts/operators — every domain is custom. |
+
+The bottom line: Kubernetes is the right answer when you have a team of platform engineers, hundreds of services, and a cloud provider budget. Eco is the right answer when you have one developer, 9 domains, and a $300 mini PC. Both work. They solve different versions of "scaling."
 
 Horizontal scaling assumes each instance is stateless (it can be). For domains that hold in-memory state (WebSocket hubs, caches, session stores in chat/notifications), horizontal scaling requires that state to be shared or partitioned:
 
