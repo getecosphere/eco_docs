@@ -118,16 +118,17 @@ deploy restarts anything; the broader estate-wide gate is on the roadmap.
 ## Sync prod data to staging
 
 Staging is a real environment, and a real environment wants real data.
-Eco can copy every MongoDB database from production to staging in one
-command:
+Eco can copy every database — **MongoDB and PostgreSQL** — from production to
+staging in one command:
 
 ```bash
 eco sync-staging
 ```
 
-The dump streams CT-to-CT on the Proxmox host — nothing round-trips to your
-laptop. Run it after a staging deploy so you're testing against realistic
-data, not an empty database.
+MongoDB streams `mongodump | mongorestore`; PostgreSQL streams
+`pg_dump | pg_restore`. Both run CT-to-CT on the Proxmox host — nothing
+round-trips to your laptop. Run it after a staging deploy so you're testing
+against realistic data, not an empty database.
 
 ## Next
 
