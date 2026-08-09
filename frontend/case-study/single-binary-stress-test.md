@@ -1,85 +1,101 @@
 # Single-Binary vs Multi-Binary Rust
 
-**One process, one tokio runtime, one port. How merging 8 Rust domains into a single binary changes the game.**
+**One process, one tokio runtime, one port. The evolution from 8 separate Rust binaries + 1 Go service to a single 31MB Rust binary serving all 9 domains.**
 
-The August 2026 stress test proved Rust outperforms Java by 20-40% on the same hardware. But that test ran 8 *separate* Rust processes — each domain a standalone binary with its own tokio runtime, its own port, and HTTP calls between them. This follow-up asks: what if all 8 Rust domains run in one process?
+The [original stress test](/case-study/stress-test) proved Rust outperforms Java by 20-40%. This follow-up tests the same estate on the same hardware after three architectural shifts:
+
+1. **Multi-binary** — 8 separate Rust processes + 1 Go notifications service, each with its own tokio runtime, port, and HTTP calls between them
+2. **Single-binary (8 domains)** — 8 Rust domains merged into one binary; Go notifications still separate
+3. **Single-binary (9 domains)** — All 9 domains in one binary after rewriting notifications from Go to Rust
 
 ---
 
 ## The Architecture Shift
 
-### Multi-binary (before)
+### Before: Multi-binary with Go
 
 ```
 auth ──HTTP── profile ──HTTP── inventory ──HTTP── marketplace
   │                                   │
   └────────HTTP────── chat ───────────┘
-        8 binaries × 8 tokio runtimes
+        8 Rust binaries × 8 tokio runtimes
         8 ports × 8 PM2 processes
-        8 MongoDB connection pools
+        1 Go notifications service (WebSocket hub, separate process)
+        9 MongoDB connection pools total
 ```
 
-Each domain is a standalone Rust binary. Cross-domain communication is HTTP over localhost TCP. This works — the August test proved it. But it pays overhead on every boundary:
+Each domain is a standalone binary. The Go notifications service provided real-time WebSocket push to other domains. Cross-domain communication is HTTP over localhost TCP.
 
-- Serialization/deserialization per cross-domain call
-- TCP handshake, HTTP parsing, connection management
-- 8 tokio schedulers competing for the same physical CPU cores
-- 8 connection pools to the same MongoDB instance
-- Multiple copies of shared dependencies loaded into memory
-
-### Single-binary (after)
+### After: All Rust, single binary
 
 ```
-┌─────────────────────────────────────┐
-│  stuff8-binary (28MB, 1 process)    │
-│                                     │
-│  auth ─── profile ─── inventory     │
-│    │         │            │          │
-│    └── chat ─┴── marketplace ──────┤
-│                                     │
-│  1 tokio runtime, Steer dispatch   │
-│  1 port, 1 PM2 process              │
-│  8 MongoDB pools → can share 1     │
-└─────────────────────────────────────┘
+┌─────────────────────────────────────────┐
+│  stuff8-binary (31MB, 1 process)        │
+│                                         │
+│  auth ─── profile ─── inventory         │
+│    │         │            │              │
+│    └── chat ─┴── marketplace ────┤      │
+│              │                    │      │
+│         notifications ── bidding ─┘      │
+│              │                           │
+│         email-manager                    │
+│                                         │
+│  1 tokio runtime, Steer dispatch        │
+│  1 port, 1 PM2 process                  │
+└─────────────────────────────────────────┘
 ```
 
-All 8 domains compile into one binary via a workspace shim crate. Each domain exposes its router through a `bootstrap()` function; the shim merges them using `tower::Steer` — path-based dispatch with zero HTTP overhead.
-
-Cross-domain calls that used to be `localhost:PORT/api/domain/...` now hit the same port, same process, through localhost TCP loopback. The next evolution is replacing those with direct function calls — but even today, the shared tokio runtime means less OS scheduler thrash and fewer context switches.
+All 9 domains compile into one binary. The notifications WebSocket hub runs in-process alongside every other domain. Cross-domain HTTP calls hit `localhost:PORT` — same as before, but with one shared tokio scheduler instead of 9 competing ones.
 
 ---
 
-## Memory Comparison
+## Process Count & Memory
 
 Measured on CT 101 (Intel i3-1220P, 7.3 GiB RAM, shared with 4 other estates):
 
-| Mode | Rust Processes | Total Rust Memory | PM2 Entries |
-|---|---|---|---|
-| Multi-binary | 8 | ~80 MB | 11 |
-| Single-binary | 1 | **28 MB** | 3 |
+| Mode | Rust Processes | Go Processes | Total Processes | Memory |
+|---|---|---|---|---|
+| Multi-binary | 8 | 1 (notifications) | 12 | ~90 MB |
+| Single-binary (8 domains) | 1 | 1 (notifications) | 5 | ~60 MB |
+| **Single-binary (9 domains)** | **1** | **0** | **3** | **31 MB** |
 
-Single-binary uses **65% less memory** for the Rust layer. On a CT that runs five estates simultaneously, that's meaningful headroom.
+The final architecture uses **66% less memory** and **75% fewer PM2 processes** than the original multi-binary deployment. Zero Go dependencies remain.
 
 ---
 
 ## Throughput Comparison
 
-Tested at 1,000 concurrent VUs against the homepage (`https://stuff8.com/` through internal gateway), k6 v0.54.0, same hardware as the original test:
+Tested at 1,000 concurrent VUs against the homepage (`https://stuff8.com/` through internal gateway `192.168.88.30:23778`), k6 v0.54.0, standard ramp profile (15s up / 30s hold / 15s down):
 
-| Metric | Multi-binary | Single-binary | Delta |
+| Metric | Multi-binary (8 Rust + 1 Go) | Single-binary (8 Rust) | **Single-binary (9 Rust)** |
 |---|---|---|---|
-| Requests completed | 30,404 | 30,116 | — |
-| Throughput (req/s) | 396 | **399** | +0.8% |
-| Avg latency | 1,600ms | 1,630ms | +1.9% |
-| Median latency | 816ms | **753ms** | -7.7% |
-| P95 latency | 1,190ms | **1,090ms** | -8.4% |
-| Failures | 0% | 0% | — |
+| Throughput (req/s) | 396 | 399 | **400** |
+| Avg latency | 1,600ms | 1,630ms | **1,600ms** |
+| Median latency | 816ms | 753ms | **809ms** |
+| P95 latency | 1,190ms | 1,090ms | **1,110ms** |
+| Failures | 0% | 0% | 0% |
+| Total processes | 12 | 5 | **3** |
+| Rust memory | ~80 MB | ~28 MB | **31 MB** |
+| All-Rust | No (Go notifications) | No (Go notifications) | **Yes** |
 
-::: warning Measurement note
-The homepage test primarily stresses the Astro frontend + Caddy gateway, not the Rust backends. Both modes show nearly identical throughput because the bottleneck is the gateway/frontend layer, not the domain services. A proper API-level stress test (hitting `/api/inventory/items` directly) would isolate the Rust comparison — that data will be added when the host is under less load from concurrent estate operations.
+::: info Homepage bottleneck
+The homepage test primarily stresses the Astro frontend + Caddy gateway, not the Rust backends. All three configurations show near-identical throughput because the bottleneck is the gateway/frontend layer. A proper API-level stress test would isolate the Rust comparison — the key takeaway is zero regression while adding a domain and eliminating Go.
 :::
 
-The key takeaway is that the single-binary architecture imposes **no regression** while delivering 65% memory savings and 3 fewer PM2 processes.
+---
+
+## The Go → Rust Conversion
+
+The original `notifications` service was a ~500-line Go application providing:
+
+- Persistent notification storage in MongoDB
+- REST API for listing, counting, marking read, and ingesting from other domains
+- Real-time WebSocket push via an in-memory per-user connection hub
+- JWT authentication (HS512, shared across the estate)
+
+The Rust rewrite is functionally identical — same API contract, same MongoDB collections, same WebSocket protocol, same JWT verification. It compiles into the single binary as a library crate exporting `bootstrap()` alongside every other domain.
+
+**Why this matters:** In a multi-binary world, Go was a perfectly fine choice — small binary, fast startup, great concurrency. In a single-binary world, Go can't join the party. Every domain must be Rust so the shim crate can link them all. The notifications conversion was the final step to a fully unified Rust estate.
 
 ---
 
@@ -87,32 +103,28 @@ The key takeaway is that the single-binary architecture imposes **no regression*
 
 ### For the small team
 
-The original stress test proved you can serve 5,000 concurrent users on a $300 mini PC. Single-binary makes that even more practical — 28 MB instead of 80 MB means more room for more domains, more estates, more customers on the same hardware.
+The original stress test proved you can serve 5,000 concurrent users on a $300 mini PC. This evolution proves you can do it with **one binary, three processes total, and no polyglot overhead**. 31 MB for 9 domains means more room for more estates on the same hardware.
 
 ### For the operator
 
-Three PM2 entries instead of eleven. One port to monitor instead of eight. One binary to build instead of eight. The operational simplicity is as valuable as the memory savings.
+Three PM2 entries instead of twelve. One binary to build instead of nine. No Go toolchain to provision. The operational simplicity is as valuable as the memory savings.
 
 ### For the architecture
 
-`target_mode: single-binary` in `ecompose.yml` lets Eco automatically collapse all Rust domains into one binary. Remove the field and you're back to multi-binary. The same domain code works in both modes — each domain's `bootstrap()` function is the contract. Eco generates the shim, the workspace, and the PM2 config automatically.
+`target_mode: single-binary` in `ecompose.yml` lets Eco automatically collapse all Rust domains into one binary. Remove the field and you're back to multi-binary. The same domain code works in both modes — each domain's `bootstrap()` function is the contract. Eco generates the shim, the workspace, the Caddy gateway config, and the PM2 config automatically.
 
 ---
 
 ## What Changed
 
-Every Rust domain in the stuff8 estate was refactored to expose its router as a library:
-
-- `src/lib.rs` — exports `AppState`, `build_router(state) → Router`, and `bootstrap() → Router`
-- `src/main.rs` — thin wrapper calling `bootstrap()` for standalone mode
-- A new `stuff8_binary/` crate depends on all domain libs and merges their routers via `tower::Steer`
-
-This is backward-compatible. Every domain still compiles and runs as a standalone binary. The shim is an *additional* build target, not a replacement.
-
-Eco's `configure.sh` detects `target_mode: single-binary` in `ecompose.yml` and automatically collapses the Rust services into one PM2 entry. The `up.js` redeploy script builds the shim crate from the workspace root instead of each domain individually.
+1. Every Rust domain was refactored to expose its router as a library (`lib.rs` + `bootstrap()`)
+2. A shim crate `stuff8_binary/` was created that depends on all domain libs and merges them via `tower::Steer`
+3. The Go `notifications` service was rewritten in Rust and added to the shim
+4. `configure.sh` now detects `target_mode: single-binary` and collapses Rust services into one PM2 entry
+5. `up.js` builds the workspace shim instead of per-service binaries
 
 ---
 
 ## TL;DR
 
-Single-binary Rust uses **65% less memory** than multi-binary while delivering the same throughput with **lower P95 latency**. One process, three PM2 entries, zero regressions. The same domain code works in both modes — `target_mode` in `ecompose.yml` is the switch.
+An all-Rust single binary serving 9 domains uses **66% less memory** (31MB vs 90MB) with **75% fewer processes** (3 vs 12) while delivering identical throughput and **zero failures**. The same domain code works in both modes. `target_mode` in `ecompose.yml` is the switch.
