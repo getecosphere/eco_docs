@@ -1,14 +1,14 @@
-# Case Study — Java → Rust Migration of the Assessment Estate
+# Case Study — Java → Rust Migration of a Customer Estate
 
 **A full Spring Boot 3.2 / Java 17 backend, byte-for-byte verified, ported to Rust (axum + sqlx), stress-tested, and shipped to production — with the last Java process removed from the estate.**
 
-Date: 10 Aug 2026 · Estate: `assessment.jogjaitcamp.com` · Prod CT 101 · Staging CT 1000
+Date: 10 Aug 2026 · Estate: a customer estate · Prod CT 101 · Staging CT 1000
 
 ---
 
 ## The starting point
 
-The Assessment estate ran a **Spring Boot 3.2 / Java 17** backend (`assessment-backend`) alongside already-converted Rust domains (auth, email-manager, photos, profile). It was the last Java holdout in the estate — a 7,500-line Java service with 20 controllers, 107 endpoints, six scoring engines, and a PostgreSQL schema managed by 24 Flyway migrations.
+A customer estate running a career-assessment platform ran a **Spring Boot 3.2 / Java 17** backend alongside already-converted Rust domains (auth, email-manager, photos, profile). It was the last Java holdout in the estate — a 7,500-line Java service with 20 controllers, 107 endpoints, six scoring engines, and a PostgreSQL schema managed by 24 Flyway migrations.
 
 | Aspect | Java (before) | Rust (after) |
 |---|---|---|
@@ -21,7 +21,7 @@ The Assessment estate ran a **Spring Boot 3.2 / Java 17** backend (`assessment-b
 
 ## Why migrate
 
-Eco's Rust domains already ran at **4–13 MB per service** vs hundreds of MB for a JVM service. The Assessment estate's Java backend was the largest remaining consumer of memory on a mini PC (7.3 GiB RAM) shared across five production estates. Converting it removed the JVM, Spring context, Hibernate, Flyway, and the entire classpath — and eliminated an entire class of crash-loop failures from stale environment handling that had historically caused thousands of PM2 restarts.
+Eco's Rust domains already ran at **4–13 MB per service** vs hundreds of MB for a JVM service. The estate's Java backend was the largest remaining consumer of memory on a mini PC (7.3 GiB RAM) shared across five production estates. Converting it removed the JVM, Spring context, Hibernate, Flyway, and the entire classpath — and eliminated an entire class of crash-loop failures from stale environment handling that had historically caused thousands of PM2 restarts.
 
 ---
 
@@ -86,7 +86,7 @@ The Rust backend handled **more requests with ~4x lower tail latency** while usi
 
 Because the functional output and stress results matched (Rust equal or better on every axis), the feature branch was merged to `main` and the prod webhook deployed the Rust backend. The swap:
 
-1. configure.sh regenerated the ecosystem, detecting `assessment-backend` as Rust.
+1. configure.sh regenerated the ecosystem, detecting the backend as Rust.
 2. The release binary replaced the Java service on CT 101.
 3. Prod verified live: home 200, `/api/health` 200, admin login → superadmin, all result endpoints returning the same data.
 

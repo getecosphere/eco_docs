@@ -4,7 +4,7 @@
 
 This is not a theoretical claim — it is the result of an exhaustive penetration testing campaign conducted in August 2026 against two production Eco estates running on an Intel i3-1220P mini PC with 7.3 GiB of RAM, sitting in an office behind a consumer ISP connection.
 
-> **Update (10 Aug 2026):** the "Legacy Java application" referenced throughout this document is the **Assessment** estate, and its Java backend has since been **fully converted to Rust** (axum + sqlx) and verified in production. The conversion used the staging workflow: the Rust rewrite was deployed to staging (CT 1000), ran byte-for-byte identical against the Java baseline on every endpoint (14/18 responses identical, the remaining 3 differing only in unsorted-list row order), then replaced prod. A head-to-head load test of the identical API workload on the same hardware measured:
+> **Update (10 Aug 2026):** the "Legacy Java application" referenced throughout this document is a **customer estate**, and its Java backend has since been **fully converted to Rust** (axum + sqlx) and verified in production. The conversion used the staging workflow: the Rust rewrite was deployed to staging (CT 1000), ran byte-for-byte identical against the Java baseline on every endpoint (14/18 responses identical, the remaining 3 differing only in unsorted-list row order), then replaced prod. A head-to-head load test of the identical API workload on the same hardware measured:
 >
 > | Metric | Java backend (before) | Rust backend (after) | Delta |
 > |---|---|---|---|
@@ -15,7 +15,7 @@ This is not a theoretical claim — it is the result of an exhaustive penetratio
 > | Failures | 0% | 0% | — |
 > | Service memory | 312 MB | ~11 MB | **Rust ~28x smaller** |
 >
-> The assessment estate is now entirely Rust: auth, email-manager, photos, profile, and assessment-backend all run axum services. The tables below are the historical Java baseline; the newer Rust numbers are in the table above.
+> The customer estate is now entirely Rust: auth, email-manager, photos, profile, and the backend all run axum services. The tables below are the historical Java baseline; the newer Rust numbers are in the table above.
 
 ---
 
@@ -32,7 +32,7 @@ This is not a theoretical claim — it is the result of an exhaustive penetratio
 
 This is not server hardware. It is a desktop-class machine that fits in a backpack. The kind of hardware a two-person startup buys because it is what they can afford.
 
-The four CTs on this host run **five production estates** (Stuff8, a legacy Java application, Apindo, Eco Docs, Ecosphere), sharing CPU, memory, and disk I/O. Every estate competes for the same resources — there is no dedicated hardware for any single application.
+The four CTs on this host run **five production estates** (Stuff8, a legacy Java application, a customer estate, Eco Docs, Ecosphere), sharing CPU, memory, and disk I/O. Every estate competes for the same resources — there is no dedicated hardware for any single application.
 
 ---
 
