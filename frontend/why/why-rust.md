@@ -103,7 +103,7 @@ These are not synthetic benchmarks. Both estates run on the same Intel i3-1220P 
 | **Observed throughput advantage** | **+40%** | baseline |
 | **Observed memory advantage** | **20–90x smaller** | baseline |
 
-Java's cost problem is the reason Eco exists at all in one sense: the old Spring Boot auth service was a heavyweight general-purpose stack for what should be the lightest, most reusable domain in the estate. Rewriting it in Rust corrected both the cost and the domain boundary.
+Java's cost problem is the reason Eco exists at all in one sense: the old Spring Boot auth service was a heavyweight general-purpose stack for what should be the lightest, most reusable domain in the estate. Rewriting it in Rust corrected both the cost and the domain boundary. The Assessment estate was the last holdout using auth as Java; it now runs the Rust auth too.
 
 > **The 514 MB gap.** On a mini PC running five estates simultaneously, the Java application's two Spring Boot services alone consume 584 MB. Stuff8's ten Rust services consume 70 MB. That 514 MB difference is more than the entire memory allocation of a typical small CT. Rust does not just run faster — it **makes room** for more domains, more estates, more customers, on the same hardware.
 

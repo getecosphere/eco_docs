@@ -52,7 +52,7 @@ Python is used for build-time and content tooling in Eco estates — asset gener
 
 <img src="/langs/java.svg" width="48" height="48" alt="Java logo" style="float:left;margin:0 16px 16px 0" />
 
-Java (17) + Maven is a supported runtime for legacy services. The original `auth` service was Spring Boot; it has been rewritten in Rust (axum) and the Java services are being retired domain by domain.
+Java (17) + Maven is a supported runtime for legacy services. The original `auth` service was Spring Boot; it has been rewritten in Rust (axum) and is now the default across every estate, including the legacy **Assessment** estate — its auth runs the Rust implementation and its remaining Java service (`assessment-backend`) is being retired next.
 
 ## Full runtime token list
 
