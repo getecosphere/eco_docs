@@ -138,7 +138,10 @@ export default withMermaid(
         '/tips/': [
           {
             text: 'Tips & Tricks',
-            items: [{ text: 'Backspace broken in tmux', link: '/tips/backspace-in-tmux' }]
+            items: [
+              { text: 'Backspace broken in tmux', link: '/tips/backspace-in-tmux' },
+              { text: 'opencode crashes on some SSH clients', link: '/tips/opencode-crash-on-some-ssh-clients' }
+            ]
           }
         ]
       },
