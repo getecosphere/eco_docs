@@ -57,7 +57,7 @@ Eco's stance: Go remains a great choice for lean, connection-heavy services. Rus
 
 ### Rust vs Node.js
 
-Node powers Eco's frontends and the Eco CLI itself. Backends in Node are a different story.
+Node powers Eco's frontends. Backends in Node are a different story — and so, until recently, was the Eco CLI itself.
 
 | Concern | Rust | Node.js |
 | --- | --- | --- |
@@ -69,7 +69,9 @@ Node powers Eco's frontends and the Eco CLI itself. Backends in Node are a diffe
 | Ecosystem | large | largest |
 | Best for | backends, compute, infrastructure | frontends, tooling, scripting |
 
-Eco's rule of thumb: Node for the browser and CLI tooling, Rust for the services that run 24/7 on the CT.
+Eco's rule of thumb: Node for the browser, Rust for the services that run 24/7 on the CT.
+
+The `eco` CLI itself used to be a Node package — a ~100 MB directory tree with `node_modules/`, `npm install` on every CT, a WASM-compiled SQLite, and a separate Node webhook receiver process. It has been ported to a single compiled Rust binary with every bundled script embedded inside it (see [The eco CLI: Node → Rust](/case-study/eco-cli-node-to-rust)). The control plane now runs with no Node.js dependency anywhere in the pipeline.
 
 ### Rust vs Java
 

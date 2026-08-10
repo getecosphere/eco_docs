@@ -125,6 +125,7 @@ export default withMermaid(
               { text: 'Single-Binary Rust', link: '/case-study/single-binary-stress-test' },
               { text: 'Go → Rust Conversion', link: '/case-study/go-to-rust' },
               { text: 'Keeping Multi-Binary', link: '/case-study/keeping-multi-binary' },
+              { text: 'The eco CLI: Node → Rust', link: '/case-study/eco-cli-node-to-rust' },
               { text: 'Future Scaling Features', link: '/case-study/future-scaling-features' }
             ]
           }
