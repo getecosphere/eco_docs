@@ -37,3 +37,19 @@ features:
   - title: A complete, holistic solution
     details: "From the ecology: not a single tool, but a self-sustaining system — domains, estates, environment, and orchestration working as one."
 ---
+
+## Proven under load
+
+**Sustained a 5,000-concurrent-VU synthetic workload on a $300 mini PC with graceful degradation.**
+
+Eco was penetration-tested in August 2026 on the same hardware it runs in production: an off-the-shelf Intel i3-1220P mini PC (7.3 GiB RAM), sharing CPU, memory, and disk with four other production estates. k6 drove 1,000 → 5,000 concurrent virtual users at two production estates through the internal gateway.
+
+| What held up | The numbers |
+|---|---|
+| Throughput at 1,000 VUs | **2,767 req/s** (45.8 MB/s) |
+| Throughput at 5,000 VUs | **1,920 req/s** — healthy, not collapsed |
+| Degradation curve | **Linear** — ~250–400ms added per 1,000 VUs, CPU-bound not broken |
+| Rust vs Java, same hardware | **20–40% faster**, **20–90x less memory** per service |
+| Java → Rust live migration | **+19% throughput**, **−81% average latency**, **~28x smaller** service |
+
+Read the full methodology and raw data — including the direct Java → Rust head-to-head on identical hardware — in the [stress-test report](/case-study/stress-test).
