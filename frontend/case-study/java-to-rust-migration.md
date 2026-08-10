@@ -1,14 +1,14 @@
-# Case Study — Java → Rust Migration of a Customer Estate
+# Case Study — Java → Rust Migration of a Legacy Java Spring Boot App
 
 **A full Spring Boot 3.2 / Java 17 backend, byte-for-byte verified, ported to Rust (axum + sqlx), stress-tested, and shipped to production — with the last Java process removed from the estate.**
 
-Date: 10 Aug 2026 · Estate: a customer estate · Prod CT 101 · Staging CT 1000
+Date: 10 Aug 2026 · Estate: a legacy Java Spring Boot app · Prod CT 101 · Staging CT 1000
 
 ---
 
 ## The starting point
 
-A customer estate running a career-assessment platform ran a **Spring Boot 3.2 / Java 17** backend alongside already-converted Rust domains (auth, email-manager, photos, profile). It was the last Java holdout in the estate — a 7,500-line Java service with 20 controllers, 107 endpoints, six scoring engines, and a PostgreSQL schema managed by 24 Flyway migrations.
+A legacy Java Spring Boot app ran a **Spring Boot 3.2 / Java 17** backend alongside already-converted Rust domains (auth, email-manager, photos, profile). It was the last Java holdout in the estate — a 7,500-line Java service with 20 controllers, 107 endpoints, six scoring engines, and a PostgreSQL schema managed by 24 Flyway migrations.
 
 | Aspect | Java (before) | Rust (after) |
 |---|---|---|
