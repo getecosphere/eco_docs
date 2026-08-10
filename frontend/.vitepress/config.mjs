@@ -61,7 +61,7 @@ export default withMermaid(
         { text: 'Why Eco', link: '/why/eco-vs-docker' },
         { text: 'Concepts', link: '/concepts/domains' },
         { text: 'Reference', link: '/reference/ecompose' },
-        { text: 'Case Study', link: '/case-study/stress-test' },
+        { text: 'Case Study', link: '/case-study/java-to-rust-migration' },
         { text: 'Tips', link: '/tips/backspace-in-tmux' },
         { text: 'Contact', link: '/contact' }
       ],
@@ -117,8 +117,9 @@ export default withMermaid(
         ],
          '/case-study/': [
           {
-            text: 'Case Study',
-            items: [
+             text: 'Case Study',
+             items: [
+              { text: 'Java → Rust Migration', link: '/case-study/java-to-rust-migration' },
               { text: 'Stuff8', link: '/case-study/stuff8' },
               { text: 'Stress Testing at Scale', link: '/case-study/stress-test' },
               { text: 'Single-Binary Rust', link: '/case-study/single-binary-stress-test' },
