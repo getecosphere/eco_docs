@@ -62,6 +62,7 @@ export default withMermaid(
         { text: 'Concepts', link: '/concepts/domains' },
         { text: 'Reference', link: '/reference/ecompose' },
         { text: 'Case Study', link: '/case-study/stress-test' },
+        { text: 'Tips', link: '/tips/backspace-in-tmux' },
         { text: 'Contact', link: '/contact' }
       ],
       sidebar: {
@@ -131,6 +132,12 @@ export default withMermaid(
           {
             text: 'Contact',
             items: [{ text: 'Contact', link: '/contact' }]
+          }
+        ],
+        '/tips/': [
+          {
+            text: 'Tips & Tricks',
+            items: [{ text: 'Backspace broken in tmux', link: '/tips/backspace-in-tmux' }]
           }
         ]
       },
