@@ -10,6 +10,9 @@ hero:
     alt: Eco
   actions:
     - theme: brand
+      text: Introducing LXS
+      link: /ecosphere/
+    - theme: alt
       text: Get Started
       link: /guide/getting-started
     - theme: alt

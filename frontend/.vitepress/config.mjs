@@ -57,6 +57,7 @@ export default withMermaid(
     themeConfig: {
       logo: { light: '/logo-light.svg', dark: '/logo-dark.svg' },
       nav: [
+        { text: 'Ecosphere', link: '/ecosphere/' },
         { text: 'Guide', link: '/guide/getting-started' },
         { text: 'Why Eco', link: '/why/eco-vs-docker' },
         { text: 'Concepts', link: '/concepts/domains' },
@@ -66,6 +67,16 @@ export default withMermaid(
         { text: 'Contact', link: '/contact' }
       ],
       sidebar: {
+        '/ecosphere/': [
+          {
+            text: 'Ecosphere',
+            items: [
+              { text: 'Introducing LXS', link: '/ecosphere/' },
+              { text: 'Why Rust & Go?', link: '/ecosphere/why-rust-and-go' },
+              { text: 'Tutorial: 3 apps with OpenCode Zen', link: '/ecosphere/tutorial-open-code-zen' }
+            ]
+          }
+        ],
         '/guide/': [
           {
             text: 'Guide',
