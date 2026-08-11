@@ -173,9 +173,12 @@ domain, the composition, the operations — as cheap as possible.
 
 - Run your estate **locally, for free**, and expose it at
   `your-name.getecosphere.com` with a single `eco up`.
+- Compose **versioned LXS** from the [LXS Registry](/ecosphere/lxs-registry) —
+  auth, notifications, photos, email-manager, profile, chat — instead of
+  building them. `eco up` pulls the verified binary; no compiler on the CT.
 - Use the free tier of ready LXS; upgrade for enterprise domains and capacity.
-- Publish your own LXS to the marketplace and let others compose it.
+- Publish your own LXS to the registry and let others compose it.
 - Follow the tutorial to see how far a free budget goes:
   [three production apps with nothing but OpenCode Zen](/ecosphere/tutorial-open-code-zen).
 
-See also: [Why Rust & Go?](/ecosphere/why-rust-and-go), [The eco CLI: Node → Rust](/case-study/eco-cli-node-to-rust), [Stress testing at scale](/case-study/stress-test).
+See also: [The LXS Registry](/ecosphere/lxs-registry), [Why Rust & Go?](/ecosphere/why-rust-and-go), [The eco CLI: Node → Rust](/case-study/eco-cli-node-to-rust), [Stress testing at scale](/case-study/stress-test).
