@@ -39,7 +39,38 @@ A CT is a *machine* — it has its own filesystem, its own users, its own networ
 
 Per-application isolation lives at this boundary — a whole application estate is one CT, and multiple estates can share one CT safely (different ports, `.env`, PM2 processes, databases).
 
-### 3. First-class operations you'd have to build yourself elsewhere
+### 3. Thin-provisioned storage has two capacity limits
+
+Eco estates commonly use Proxmox thin storage: a CT receives a virtual disk
+size, while the host allocates physical blocks only as the CT writes them. This
+keeps early-stage estates economical, but it creates two different capacity
+figures that operators must monitor:
+
+```mermaid
+flowchart TD
+  host[Physical host storage] --> pool[Thin storage pool]
+  pool --> ctA[Estate CT virtual disk]
+  pool --> ctB[Another CT virtual disk]
+  ctA --> guest[Guest filesystem free space]
+```
+
+- **Guest free space** is what `df` reports inside a CT. It determines whether
+  that estate can create files on its virtual disk.
+- **Thin-pool free space** is the host capacity shared by every CT using that
+  pool. It determines whether Proxmox can satisfy new physical writes.
+
+Those values can disagree. A CT may show free space after deleting build cache
+or logs, while the shared thin pool remains nearly full because the reclaimed
+blocks have not yet been discarded back to the host. At that point a later
+write can fail even though the CT's own filesystem appears healthy.
+
+The operational rule is simple: keep a headroom buffer at both layers. Eco's
+deployment guard removes only safe, rebuildable cache when an estate is low on
+guest space and stops before a deploy can fill its filesystem. That safeguard
+does not replace host-level thin-pool monitoring, snapshots/backups, and
+capacity planning.
+
+### 4. First-class operations you'd have to build yourself elsewhere
 
 Proxmox ships with operational features that, in Docker/K8s land, are separate products:
 
@@ -50,7 +81,7 @@ Proxmox ships with operational features that, in Docker/K8s land, are separate p
 - **Resource quotas** — CPU, memory, disk, and network per CT
 - **A real web UI + REST API** — Eco drives CT lifecycle through the Proxmox API
 
-### 4. Built on proven open source
+### 5. Built on proven open source
 
 Proxmox is Debian + KVM + LXC + Ceph (for clustered storage) + ZFS — all battle-tested open-source components, glued together by a management layer that is itself open source. No licensing fees, no per-CT costs.
 
