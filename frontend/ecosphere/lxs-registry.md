@@ -20,7 +20,7 @@ lxs-registry/
 │   └── 1.0.0/
 │       ├── lxs.yml          # contract, runtime, provenance, checksums
 │       └── linux-amd64/notifications   # the compiled static binary
-└── photos/  email-manager/  profile/  chat/
+└── storage/  email-manager/  profile/  chat/
 ```
 
 Each version is tagged `name-version` and verified by sha256. The manifest
@@ -37,7 +37,7 @@ Converted from the stuff8 supporting domains, all statically linked musl:
 | LXS | version | domain | contract |
 | --- | --- | --- | --- |
 | `notifications` | 1.0.0 | in-app + email delivery, WebSocket push | mongodb, JWT |
-| `photos` | 1.0.0 | uploads, image/video processing, S3 | S3, ffmpeg |
+| `storage` | 1.0.0 | media uploads, image/video processing, S3 (domain: photos) | S3, ffmpeg |
 | `email-manager` | 1.0.0 | transactional email via Brevo | mongodb, Brevo |
 | `profile` | 1.0.0 | user profiles, social links | mongodb, JWT |
 | `chat` | 1.0.0 | realtime messaging, Redis pub/sub | mongodb, redis, JWT |
