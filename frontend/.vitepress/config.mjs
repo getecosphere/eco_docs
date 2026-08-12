@@ -73,6 +73,7 @@ export default withMermaid(
             items: [
               { text: 'Introducing LXS', link: '/ecosphere/' },
               { text: 'The LXS Registry', link: '/ecosphere/lxs-registry' },
+              { text: 'Contributing LXS', link: '/ecosphere/contribute' },
               { text: 'Why Rust & Go?', link: '/ecosphere/why-rust-and-go' },
               { text: 'Tutorial: 3 apps with OpenCode Zen', link: '/ecosphere/tutorial-open-code-zen' }
             ]
