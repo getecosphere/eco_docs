@@ -110,7 +110,7 @@ User profile: bio, experience, education, skills, certifications, social links. 
 
 ## Composition apps
 
-- **stuff8_composition** — the Stuff8 frontend, built with Astro.js + Tailwind CSS, composing the domains above into one user experience
+- **stuff8_core** — the Stuff8 estate core repo: owns `ecompose.yml` + the Astro.js + Tailwind CSS frontend, composing the domains above into one user experience
 - **eco_docs_composition** — this documentation site (VitePress)
 
 ## The catalog grows

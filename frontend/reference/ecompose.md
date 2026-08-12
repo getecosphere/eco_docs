@@ -57,14 +57,14 @@ domains:
   - inventory
   - marketplace
   - bidding
-  - stuff8_composition
+  - stuff8_core
   - chat
   - profile
   - notifications
 
 services:
   stuff8-frontend:
-    path: stuff8_composition/frontend
+    path: stuff8_core/frontend
     runtimes:
       - node@20
   auth-backend:

@@ -19,7 +19,7 @@ Stuff8 composes these domains (from `repos.json`):
 | `notifications` | In-app notifications + realtime | auth | Go · MongoDB · WebSocket |
 | `profile` | User profile domain | auth | Rust · MongoDB |
 | `rag` | Estate-aware Q&A (DeepSeek grounding) | — | Rust (axum) · MongoDB · fastembed/ONNX |
-| `stuff8_composition` | Astro.js frontend | auth, photos, inventory, marketplace, bidding, notifications | Astro.js · Tailwind CSS · Node 20 |
+| `stuff8_core` | Estate core: ecompose.yml + Astro.js frontend | auth, photos, inventory, marketplace, bidding, notifications | Astro.js · Tailwind CSS · Node 20 |
 
 Ten independent repositories, each with its own contract, persistence, and runtime — composed into a single estate and deployed on **one** CT.
 
@@ -28,7 +28,7 @@ Ten independent repositories, each with its own contract, persistence, and runti
 The mix of runtimes shows Eco's language-agnosticism in practice:
 
 - **10 Rust services** (auth, photos, inventory, marketplace, bidding, chat, profile, notifications, rag + the frontend build toolchain)
-- **1 Node.js/Astro frontend** (stuff8_composition)
+- **1 Node.js/Astro frontend** (stuff8_core)
 
 All of them run natively on CT 101 under PM2, share the same wiring model (ports, `.env`, gateway), and are managed by one `eco up`. Stuff8 runs in **multi-binary mode**: each domain is its own release binary and PM2 process, so services can be scaled and restarted independently.
 
@@ -45,7 +45,7 @@ flowchart TD
         F[chat] --> G
         H[notifications] --> G
         I[rag] --> G
-        G[stuff8_composition]
+        G[stuff8_core]
     end
 
     G --> M[ecompose.yml]
@@ -69,7 +69,7 @@ flowchart TD
     DNS --> USER[Browser]
 ```
 
-1. **Repos** — each domain lives in its own repository; `stuff8_composition` is the composition that pulls them together
+1. **Repos** — each domain lives in its own repository; `stuff8_core` is the estate core repo (owning `ecompose.yml`) that pulls them together
 2. **ecompose.yml** — declares the estate: CT 101, the ten domains, the services, the `stuff8.com` hostname
 3. **eco up** — provisions runtimes, clones domains, wires `.env` + ports + JWT, generates PM2 config, starts services
 4. **Gateway** — Caddy routes `/` to the frontend, `/auth-api/*` to auth, `/api/*` to the backends
@@ -134,4 +134,4 @@ production. See the [Prod & Staging Workflow](/guide/prod-staging-workflow).
 
 The estate is deployed at **https://stuff8.com**, with the staging preview at
 **https://staging.stuff8.com**. `eco up` built them from the
-`stuff8_bootstrap` manifest and the composed domains above.
+`stuff8_core` estate manifest and the composed domains above.
