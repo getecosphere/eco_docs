@@ -73,6 +73,6 @@ Java (17) + Maven is a supported runtime for legacy services. The original `auth
 
 ## Languages are a domain decision
 
-A domain's `CLAUDE.md` fixes its contract, including its runtime. Eco doesn't force a language on you — it provisions whatever the service declares and keeps the operational surface identical (ports, `.env`, PM2, gateway routing) regardless.
+A domain's `README.md` fixes its contract, including its runtime. Eco doesn't force a language on you — it provisions whatever the service declares and keeps the operational surface identical (ports, `.env`, PM2, gateway routing) regardless.
 
 See also: [ecompose.yml reference](/reference/ecompose), [Architecture](/reference/architecture).

@@ -25,7 +25,7 @@ A composition app declares the domains it wants; Eco clones them, resolves the d
 
 ## Reusable support domains
 
-These are the "public" building blocks — generic, reusable capability domains that any estate can compose. They carry their contract in their own `CLAUDE.md`, so a new estate inherits a veteran-designed boundary, not a bespoke implementation.
+These are the "public" building blocks — generic, reusable capability domains that any estate can compose. They carry their contract in their own `README.md`, so a new estate inherits a veteran-designed boundary, not a bespoke implementation.
 
 ### auth
 
