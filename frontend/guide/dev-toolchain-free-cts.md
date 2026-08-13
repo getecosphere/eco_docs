@@ -107,11 +107,55 @@ watchdogs.
 
 - [x] Local builder provisioned (Multipass Ubuntu 22.04, x86_64) — Intel + M1
       provisioning scripts
-- [ ] `eco up --remote` builds Node artifacts (dist/bundle) on the builder
-- [ ] `.eco-frontend-hash` skip, mirroring `.eco-rust-hash`
+- [x] `eco up --remote` builds Node artifacts (dist/bundle) on the builder
+- [x] `.eco-frontend-hash` skip, mirroring `.eco-rust-hash`
+- [x] Validate on **stuff8** and **assessment** estates (both deployed to
+      staging, frontends serving HTTP 200)
 - [ ] systemd service generation in `configure.sh` (replaces PM2)
-- [ ] Validate on **stuff8** and **assessment** estates
 - [ ] Purge node/npm/pm2 from CT 101 + CT 1000
+
+> Honest caveat until Phase 3–4 land: frontends are *built* off-CT and their
+> `dist` ships to the CT, but the CT still runs the preview runtime (`vite
+> preview`, which is Node) until the systemd + static-serving migration and the
+> node purge are done. The "no Node on a production CT" claim below is the
+> end-state; today the CT keeps Node solely to *serve* the shipped dist.
+
+## Live validation (stuff8 + assessment on staging CT 1000)
+
+Both estates deployed end-to-end with `eco up --remote --staging`:
+
+```
+assessment  core (Rust musl) + frontend (SvelteKit, built on the local builder)
+            + auth@1.0.2, email-manager@1.0.1, storage@1.0.5, profile@1.0.2 (LXS)
+stuff8      inventory/marketplace/bidding (Rust musl) + frontend (Astro, built
+            on the local builder) + auth/chat/email-manager/storage/profile/
+            notifications (LXS, bumped to the docs versions)
+```
+
+Both frontends serve HTTP 200 with the dist that was built on the developer's
+Linux VM and shipped through the agent — no in-CT frontend build.
+
+### Field notes (things that will bite you again)
+
+- **Swapping `/usr/local/bin/eco` on the host does NOT update the running
+  `eco serve` agent.** The agent is a long-lived process; it keeps the old
+  binary in memory. After any binary swap, restart it
+  (`systemctl restart eco-serve` or `pkill -f 'eco serve'` + relaunch).
+- **`bash -lc` (login shell) corrupts exit codes on the builder's Ubuntu
+  image:** `set -e; exit 0` reports exit 1 because login shells source
+  `~/.profile`/`~/.bashrc`. Every builder command must use non-login
+  `bash -c`.
+- **Estate-core path prefixes must be stripped on the flattened host layout.**
+  A service at `stuff8_core/frontend` lands at `/opt/projects/stuff8/frontend`
+  on the CT; resolve it via the estate-core repo name (from `composition.git`),
+  or npm install/build run in a directory that doesn't exist.
+- **Some `package-lock.json` files are missing the platform-specific optional
+  deps** (e.g. `@esbuild/linux-x64`), so `npm ci` fails on Linux. The builder
+  and the CT fall back to `npm install`, which resolves them.
+- **Redeploying over an existing estate hits a port-registry conflict** on the
+  target CT (ports are allocated per hostname and persist). Reset with
+  `eco ports reset --project <name>` on that CT before redeploying a
+  materially different service set.
 
 This is the direction Eco was always headed: **Docker gives you images and
 removes the toolchain from the host. Eco gives you artifacts and removes the
