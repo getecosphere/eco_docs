@@ -119,6 +119,31 @@ synced and skipped in seconds. The remaining CT-side time today is `npm ci`
 for the preview runtime — that disappears entirely in Phase 4 (static serving,
 no Node on the CT at all).
 
+## Node backends as single binaries (Bun)
+
+Node doesn't ship as a single binary by default — it ships an environment.
+But **Bun can compile a Node app (and its imports) into one static executable**
+with the Bun runtime bundled:
+
+```bash
+bun build --compile --target=bun-linux-x64 ./build/index.js --outfile app-server
+```
+
+Measured on the assessment SSR frontend (SvelteKit adapter-node), deployed to a
+CT:
+
+| | size | needs node_modules on the CT? |
+|---|---|---|
+| Bun-compiled single binary | **91 MB** | **no** — run it, it serves |
+| Dev `node_modules` | 275 MB | yes, plus a Node runtime |
+
+The 91 MB binary ran on the linux-x64 CT with no `npm ci` and served HTTP 200.
+This gives Node backends the same "single static artifact, CT runs it" story as
+Rust — and it cross-compiles to `bun-linux-x64` from any host (including the
+arm64 M1). Caveat: SSR servers that read sibling asset files (adapter-node's
+`client/`/`server/`) still need those assets shipped alongside the binary
+(no node_modules though); pure backend APIs bundle everything in the one file.
+
 ## Status
 
 - [x] Local builder provisioned (Multipass Ubuntu 22.04, x86_64) — Intel + M1
