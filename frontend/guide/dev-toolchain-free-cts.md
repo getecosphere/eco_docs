@@ -144,6 +144,40 @@ arm64 M1). Caveat: SSR servers that read sibling asset files (adapter-node's
 `client/`/`server/`) still need those assets shipped alongside the binary
 (no node_modules though); pure backend APIs bundle everything in the one file.
 
+`eco up --remote` integrates this: SSR node services are Bun-compiled into a
+single linux-x64 binary (with a `.eco-bun` marker), the CT installs the binary
+and runs it as a systemd unit directly — no `npm ci`, no `node_modules`.
+
+## No VM needed — build on the host (M1-validated)
+
+The Linux VM on the developer machine was over-engineering. Node build output
+(dist / JS bundles / Bun binaries) is **platform-agnostic** — esbuild runs on
+any arch and emits the same files; the linux-x64 native modules are installed
+on the CT at runtime, not baked into the build. So the builder can be the host
+itself: set `ECO_BUILDER=host` and `eco up --remote` builds directly on the
+dev machine.
+
+Validated end-to-end from an **arm64 M1 MacBook Air** (8 GB RAM):
+
+| step | result |
+|---|---|
+| Rust cross-compile (`x86_64-unknown-linux-musl`) | native, fast (cold backend ~1m38s) |
+| Frontend build (host, no VM) | Astro ~2s, SvelteKit SSR ~8s |
+| Bun-compile SSR → linux-x64 binary | single 95 MB ELF binary |
+| CT runs the binary | systemd unit `ExecStart=.../binary`, no node_modules, HTTP 200 |
+
+## Shipping over lossy links: scp
+
+Large payloads (a Bun binary + source can exceed 100 MB) drop mid-stream on
+HTTP POST over flaky links (tailnet, unreliable wifi). `ECO_SSH` switches
+`eco up --remote` to ship the payload via **scp** — SSH sustains large
+transfers where the HTTP POST drops — then the agent's `deploy-file` endpoint
+reads the uploaded file:
+
+```bash
+export ECO_SSH=root@<host>   # scp the payload, then trigger the deploy
+```
+
 ## Status
 
 - [x] Local builder provisioned (Multipass Ubuntu 22.04, x86_64) — Intel + M1
@@ -152,8 +186,12 @@ arm64 M1). Caveat: SSR servers that read sibling asset files (adapter-node's
 - [x] `.eco-frontend-hash` skip, mirroring `.eco-rust-hash`
 - [x] Validate on **stuff8** and **assessment** estates (both deployed to
       staging, frontends serving HTTP 200)
-- [ ] systemd service generation in `configure.sh` (replaces PM2)
-- [ ] Purge node/npm/pm2 from CT 101 + CT 1000
+- [x] Host-builder mode (`ECO_BUILDER=host`, no VM) + Bun-compile SSR node
+      apps to single linux-x64 binaries — validated end-to-end from the M1
+- [x] scp-based payload shipping (`ECO_SSH`) for lossy links
+- [ ] systemd service generation in `configure.sh` (replaces PM2) — done on
+      staging CT 1000
+- [ ] Purge node/npm/pm2 from CT 101 (production) — the final step
 
 > Honest caveat until Phase 3–4 land: frontends are *built* off-CT and their
 > `dist` ships to the CT, but the CT still runs the preview runtime (`vite
