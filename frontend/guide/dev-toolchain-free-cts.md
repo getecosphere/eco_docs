@@ -103,6 +103,22 @@ unit", and PM2 (itself a Node program) is gone — services run as plain
 systemd units with journald logs, cgroup resource limits, and health
 watchdogs.
 
+## What you save in time
+
+Measured on the reference machine + the live staging estate:
+
+| | Before (build on the CT) | After (build on the dev builder) |
+|---|---|---|
+| Frontend build (`npm ci` + `vite`/`astro build`) | every deploy, on every CT, ~1–3 min of CT CPU + disk churn | **once** on the builder (~26 s warm, a couple of minutes cold), then **hash-skipped forever** |
+| CT-side `npm run build` step | ran every deploy | **removed** — the shipped `dist` is served as-is |
+| Rust cross-compile | in-CT (or shared builder contention) | dev machine, cached: ~0.5–1.6 s per unchanged service |
+| Repeat deploy, frontend part | re-downloads + re-builds node_modules on the CT | `sync` + hash-skip → no build; the CT only installs the *runtime* deps for the preview server |
+
+The `.eco-frontend-hash` skip means a frontend whose source didn't change is
+synced and skipped in seconds. The remaining CT-side time today is `npm ci`
+for the preview runtime — that disappears entirely in Phase 4 (static serving,
+no Node on the CT at all).
+
 ## Status
 
 - [x] Local builder provisioned (Multipass Ubuntu 22.04, x86_64) — Intel + M1
