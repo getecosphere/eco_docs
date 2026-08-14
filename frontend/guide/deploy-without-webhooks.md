@@ -3,6 +3,21 @@
 > The build farm is on each developer machine. Deploys are explicit, not
 > webhook-triggered.
 
+## The repos
+
+Eco is split into two repos under `github.com/ecosphere-creator`:
+
+- **`eco`** (public) — the inspectable CLI: `eco up --remote`, `lxs`, `ports`,
+  `show`, `startproject`, `compose`, systemd units, host-builder, Bun. No
+  secrets, no agent, no `repos.json`. Anyone can audit that the CLI does
+  nothing sneaky.
+- **`eco-server`** (private) — the control plane: the `serve` agent that drives
+  CT deploys on the Proxmox host (pct orchestration, cloudflare/tunnels, the
+  ports registry, `configure.sh`). The business stays in the server.
+
+The public CLI talks to the private server over the agent HTTP API + API key —
+a clean, inspectable boundary.
+
 ## The old model: webhook-driven deploys
 
 Previously a deploy was wired to GitHub: a push to the deploy branch fired a
