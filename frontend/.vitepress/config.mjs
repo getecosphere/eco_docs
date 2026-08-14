@@ -86,6 +86,7 @@ export default withMermaid(
               { text: 'Getting Started', link: '/guide/getting-started' },
               { text: 'Quick Start', link: '/guide/quick-start' },
               { text: 'Dev-toolchain-free CTs', link: '/guide/dev-toolchain-free-cts' },
+              { text: 'Deploy without webhooks', link: '/guide/deploy-without-webhooks' },
               { text: 'PM2 → systemd', link: '/guide/pm2-to-systemd' },
               { text: 'Prod & Staging Workflow', link: '/guide/prod-staging-workflow' },
               { text: 'Supported Languages', link: '/guide/languages' }
