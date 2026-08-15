@@ -6,7 +6,7 @@ Stuff8 is a production estate built with Eco — a **personal inventory system**
 
 ## The composition
 
-Stuff8 composes these domains (from `repos.json`):
+Stuff8 composes these domains:
 
 | Domain | Role | Requires | Stack |
 | --- | --- | --- | --- |
@@ -30,7 +30,7 @@ The mix of runtimes shows Eco's language-agnosticism in practice:
 - **10 Rust services** (auth, photos, inventory, marketplace, bidding, chat, profile, notifications, rag + the frontend build toolchain)
 - **1 Node.js/Astro frontend** (stuff8_core)
 
-All of them run natively on CT 101 under PM2, share the same wiring model (ports, `.env`, gateway), and are managed by one `eco up`. Stuff8 runs in **multi-binary mode**: each domain is its own release binary and PM2 process, so services can be scaled and restarted independently.
+All of them run natively on CT 101 under systemd, share the same wiring model (ports, `.env`, gateway), and are managed by one `eco up --remote`. Stuff8 runs in **multi-binary mode**: each domain is its own release binary and unit, so services can be scaled and restarted independently.
 
 ## Deployment flow
 
@@ -53,7 +53,7 @@ flowchart TD
 
     subgraph CT101[CT 101 - shared]
         U --> P[provision.sh<br/>runtimes]
-        P --> W[configure.sh<br/>ports .env JWT PM2]
+        P --> W[configure.sh<br/>ports .env JWT systemd]
         W --> S1[stuff8-frontend]
         W --> S2[photos-backend]
         W --> S3[auth-backend]
@@ -71,7 +71,7 @@ flowchart TD
 
 1. **Repos** — each domain lives in its own repository; `stuff8_core` is the estate core repo (owning `ecompose.yml`) that pulls them together
 2. **ecompose.yml** — declares the estate: CT 101, the ten domains, the services, the `stuff8.com` hostname
-3. **eco up** — provisions runtimes, clones domains, wires `.env` + ports + JWT, generates PM2 config, starts services
+3. **eco up --remote** — builds locally, ships artifacts, provisions runtimes, wires `.env` + ports + JWT, generates config, starts services
 4. **Gateway** — Caddy routes `/` to the frontend, `/auth-api/*` to auth, `/api/*` to the backends
 5. **Exposure** — Cloudflare Tunnel → proxy CT → gateway → services, all under one hostname
 
@@ -103,9 +103,9 @@ flowchart LR
 - **Reusable domains** — `auth`, `photos`, `chat`, `notifications`, and `rag` are not Stuff8-specific; they are composed into other estates too
 - **Pluggable capability** — the `rag` domain was added to an already-running estate by cloning it and adding two lines to `ecompose.yml`; no existing service changed
 - **Language-agnostic** — Rust, Go, and Node services coexist natively on one CT
-- **Shared CT** — CT 101 hosts multiple estates, each with its own ports, `.env`, PM2 processes, and databases
+- **Shared CT** — CT 101 hosts multiple estates, each with its own ports, `.env`, systemd units, and databases
 - **One hostname** — external traffic is `stuff8.com`, with `photos.stuff8.com` as an `expose.additional` for the media backend
-- **Webhook deploys** — push to `main` on any composed repo triggers an estate-wide redeploy
+- **Explicit deploys** — `eco up --remote` (and `--staging`) from the developer machine
 
 ## Stress tested to 5,000 concurrent users
 

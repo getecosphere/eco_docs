@@ -44,7 +44,7 @@ It compiled. All ~15 cross-domain call sites were refactored. The isolation guar
 | Real user impact | None — homepage bottleneck is frontend/gateway at 809ms median | Same |
 | Multi-binary switch | Requires full refactor — ports break when domains are separate processes | `target_mode` toggle, zero code change |
 | Independent deploy | Not possible — one binary, one restart | Deploy inventory without touching auth |
-| Independent scaling | Not possible — one process, one CPU/memory slot | Per-domain PM2 entries, per-process limits |
+| Independent scaling | Not possible — one process, one CPU/memory slot | Per-domain units, per-process limits |
 | Code surface | 6 new trait impls, ~15 call site changes, a shared DTO crate, a registry | Each domain just calls `reqwest` against an env URL it already has |
 
 The function-call approach shaves microseconds off a test whose median is 809ms. That is noise. What it costs you, permanently, is the ability to split domains back out.
@@ -58,7 +58,7 @@ The function-call approach shaves microseconds off a test whose median is 809ms.
 Single-binary mode is deployed on `stuff8.com` right now and [works in production](/case-study/single-binary-stress-test). The breakthrough:
 
 - **31MB for 9 domains** vs ~90MB across 12 processes
-- **3 PM2 entries** (binary + frontend + gateway) vs 12
+- **3 units** (binary + frontend + gateway) vs 12
 - **Zero Go** — the notifications service was rewritten in Rust as the final step
 - **`target_mode: single-binary`** in `ecompose.yml` — flip it back and you're multi-binary with no domain code changes
 
@@ -68,7 +68,7 @@ The only reason this is possible: every domain exposes a `bootstrap()` → `Rout
 
 ## Service-level scaling
 
-In multi-binary mode, eco can scale individual services independently — horizontal (more instances), vertical (more CPU/memory), and eventually automatic (a policy sidecar reading PM2 metrics). The full design, including how Caddy sticky sessions handle stateful WebSocket domains and why HTTP loopback is the enabler, has its own page:
+In multi-binary mode, eco can scale individual services independently — horizontal (more instances), vertical (more CPU/memory), and eventually automatic (a policy sidecar reading per-process metrics). The full design, including how Caddy sticky sessions handle stateful WebSocket domains and why HTTP loopback is the enabler, has its own page:
 
 [Future Scaling Features](/case-study/future-scaling-features)
 

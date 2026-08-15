@@ -1,79 +1,102 @@
-# CI/CD — built in, not bolted on
+# Deploy — explicit, from the machine that builds
 
-Eco ships **continuous integration and continuous deployment** as part of `eco up` — there is no separate CI/CD pipeline to configure, no YAML workflows to maintain, no third-party service to wire up. If the estate declares `deploy.github.enabled`, the whole loop is handled automatically.
+Eco's deploys are **explicit and dev- or CI-initiated**. There is no CI/CD
+pipeline to configure and no webhook to wire up: `eco up --remote` *is* the
+deploy. The build farm lives on each developer machine, and the same command
+that builds also ships.
 
 ## How it works
 
-```yaml
-deploy:
-  github:
-    enabled: true
-    branch: main
-    debounce_ms: 15000
-    webhook_port: 8790
-    webhook_path: /__eco/github/deploy
+```
+developer machine                       Proxmox host                     CT
+─────────────────                       ───────────────                   ─────
+eco up --remote ──► build + ship ──► eco serve agent ──► installs ──► systemd runs it
+  (or CI runner)                        (deploy endpoint)             (no git, no build)
 ```
 
-When `eco up` brings the estate up, it also:
+From the estate root (where `ecompose.yml` lives):
 
-1. **Installs a webhook receiver** on the estate's own gateway (its own private port)
-2. **Registers GitHub webhooks** on every repo composed into the estate (all domains, not just the bootstrap)
-3. **Exposes the receiver** through the same Cloudflare tunnel + proxy CT chain, under a dedicated deploy hostname
-
-From that moment, the deploy pipeline runs itself.
-
-## The deploy loop
-
-```
-push to main ──────> prod webhook ──> estate receiver ──> debounce ──> prod redeploy
-push to feature/* ─> staging webhook ─> staging receiver ─> debounce ──> staging redeploy
+```bash
+eco up --remote             # build locally + ship + deploy to production
+eco up --remote --staging   # ...to the staging footprint instead
 ```
 
-1. A developer pushes to `main` (prod) or a feature branch (staging) on any composed repo
-2. GitHub fires the webhook to the matching estate receiver
-3. Eco **debounces** — it waits `debounce_ms` (default 15 s) so a burst of pushes collapses into one deploy
-4. Eco pulls the **latest code across every repo** in the estate (not just the triggering repo); a staging deploy checks out the pushed feature branch in the repos that have it
-5. Rust services run their tests (`cargo test`); a service with failing tests keeps its last-good build instead of breaking the estate
-6. PM2 reloads the services; the gateway and exposure are already correct
+What happens:
+
+1. **Build on your machine** — Rust services are cross-compiled for
+   `x86_64-unknown-linux-musl` (static binary, no glibc matching); frontends
+   are built (`npm ci` + `vite`/`astro build`) and optionally Bun-compiled
+   into a single linux-x64 binary.
+2. **Ship to the host** — the source + artifacts travel to the `eco serve`
+   agent on the Proxmox host over HTTP (or `scp` on lossy links).
+3. **Deploy in the CT** — the agent installs the binaries and dist, provisions
+   runtime deps (databases, redis, onnxruntime), applies Rust migrations,
+   generates `.env` via `configure.sh`, and restarts the services under
+   **systemd**.
 
 ## Staging footprint
 
-An estate can declare a second **staging** deployment that receives pushes to
-any branch **except** the production deploy branch:
+An estate can declare a second **staging** deployment:
 
 ```yaml
-deploy:
-  github:
-    enabled: true
-    branch: main
-
 staging:
   ct: 1000
 ```
 
-`eco up` provisions both footprints and registers **two** webhooks per repo:
-one fixed to `main` (prod), one accepting any other branch (staging). A
-feature branch push deploys to `staging-<hostname>`; a `main` push deploys to
-production. See the [Prod & Staging Workflow](/guide/prod-staging-workflow).
+`eco up --remote --staging` provisions and deploys the staging footprint the
+same way as prod — just a different CT and hostname
+(`staging-<hostname>`). Which footprint you deploy to is an explicit flag,
+never inferred from a branch.
+
+## For teams: CI-initiated deploys
+
+The same build + ship path works from a CI runner. A GitHub Actions workflow
+on the deploy branch simply runs `eco up --remote` against the agent:
+
+```yaml
+# .github/workflows/deploy.yml
+on:
+  push:
+    branches: [main]
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy
+        env:
+          ECO_API_URL: ${{ secrets.ECO_API_URL }}
+          ECO_API_KEY: ${{ secrets.ECO_API_KEY }}
+          ECO_LXS_REGISTRY: ${{ runner.temp }}/lxs-registry
+        run: |
+          git clone https://github.com/getecosphere/lxs-registry.git $ECO_LXS_REGISTRY
+          curl -fsSL https://bun.sh/install | bash
+          export PATH="$HOME/.bun/bin:$PATH"
+          eco up --remote
+```
 
 ## What you don't have to do
 
-- No CI platform (GitHub Actions, GitLab CI, Jenkins) to configure
-- No pipeline YAML to maintain in every repo
+- No CI platform to configure for the happy path (optional for teams)
+- No pipeline YAML in every repo (optional for teams)
+- No webhook receiver on the CT, no `redeploy.sh`, no `deploy.github` block
 - No SSH-based deploy scripts per service
-- No "how do we deploy?" handbook — `eco up` encoded the answer once
+- No "how do we deploy?" handbook — `eco up --remote` encoded the answer once
 
-## Why the estate is the pipeline unit
+## Why the estate is the deploy unit
 
-Eco's CI/CD is **estate-scoped**: pushing to `main` redeploys the whole estate consistently. This matches the domain model — the estate is the deployment unit, so the pipeline runs at estate granularity, not per-repo.
-
-One shared repo composed into many estates gets a webhook registered by each estate, so a single push updates every product that uses that domain. Consistent, and no cross-estate coordination to configure.
+Eco's deploys are **estate-scoped**: one `eco up --remote` ships the whole
+estate consistently. This matches the domain model — the estate is the
+deployment unit, so the pipeline runs at estate granularity, not per-repo.
 
 ## First-class benefits
 
 - **Always in sync** — deploys are estate-wide, so composed domains can't drift
-- **Test-gated Rust** — failed tests never take down a running service
+- **Deterministic** — the shipped source is exactly what the workspace had;
+  no server-side rebuild that can differ from your machine
+- **Toolchain-free CTs** — no compiler, no npm, no build cache on production
 - **Idempotent** — redeploys are the same as first deploys
 - **Operational by default** — no pipeline, no lock-in, no extra cost
 
-Eco treats CI/CD as an architectural concern of the estate, not an afterthought you add on top. See [ecompose.yml reference](/reference/ecompose) for the `deploy` block, and [Quick Start](/guide/quick-start) for the end-to-end flow.
+See [ecompose.yml reference](/reference/ecompose) for the manifest, and
+[Deploy without webhooks](/guide/deploy-without-webhooks) for the full story.

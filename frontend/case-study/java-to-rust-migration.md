@@ -27,15 +27,17 @@ Eco's Rust domains already ran at **4–13 MB per service** vs hundreds of MB fo
 
 ## The migration workflow (staging-first)
 
-The migration used the [prod & staging workflow](/guide/prod-staging-workflow): a feature branch deployed to the **staging footprint** (CT 1000) via the staging webhook, verified against prod, then merged to `main` for the prod webhook.
+The migration used the [prod & staging workflow](/guide/prod-staging-workflow): the feature branch was deployed to the **staging footprint** (CT 1000), verified against prod, then merged to `main` for the production deploy.
 
 ```
 eco git start feature/rust-conversion     # branch all estate repos
 # ... write Rust backend, update ecompose.yml (java@17+maven → rust) ...
-git push origin feature/rust-conversion   # → staging webhook deploys to CT 1000
+eco git push                              # push the feature branch
+eco up --remote --staging                 # deploy staging (CT 1000)
 # ... verify on staging ...
 eco git finish feature/rust-conversion    # merge to main
-git push origin main                      # → prod webhook deploys to CT 101
+eco git push
+eco up --remote                           # deploy production (CT 101)
 ```
 
 The conversion preserved the exact HTTP contract and the existing PostgreSQL schema:
@@ -84,7 +86,7 @@ The Rust backend handled **more requests with ~4x lower tail latency** while usi
 
 ## Ship to prod
 
-Because the functional output and stress results matched (Rust equal or better on every axis), the feature branch was merged to `main` and the prod webhook deployed the Rust backend. The swap:
+Because the functional output and stress results matched (Rust equal or better on every axis), the feature branch was merged to `main` and the production deploy shipped the Rust backend. The swap:
 
 1. configure.sh regenerated the ecosystem, detecting the backend as Rust.
 2. The release binary replaced the Java service on CT 101.
@@ -94,26 +96,20 @@ The estate is now **entirely Rust** — no Java process runs anywhere on the pro
 
 ---
 
-## Rust builder moved to staging CT
+## Toolchain moved off the production CT
 
-As part of the same effort, the **dedicated Rust builder** moved from CT 101 (prod) to CT 1000 (staging): `ECO_RUST_DEDICATED_BUILDER=1000` in the host environment, CT 1000 marked `role=rust-builder`, and the managed toolchain cleared from CT 101 (`eco prox clear-rust`). Prod CT 101 now has **no cargo** — it can't compile Rust, so no building happens on the production estate. `eco up` builds on the builder CT 1000 and ships the release binaries to CT 101.
-
-This surfaced and fixed real bugs in eco's dedicated-builder flow, now in the eco repo:
-
-- **Artifact path**: `buildRustInDedicatedCt` built `--release` but transferred from `target/debug` → now ships `target/release`.
-- **Source sync**: the builder synced the host's slim bootstrap checkout (no domains, no workspace manifest) → now syncs the full estate from the app CT so `cargo build --workspace` sees everything.
-- **Package resolution**: manifests were read from the host (wrong layout) → now read from the app/builder CT.
-- **"Text file busy"**: `pct push` over a running binary failed → now pushes `<pkg>.new` then `mv -f` (atomic rename).
-- **sqlx prep**: re-installed sqlx-cli even when present (read-only registry) → now idempotent.
-- **Webhook redeploy**: when an external builder is configured, the generated `redeploy.sh` skips inline `cargo build` (the app CT has no toolchain) and relies on the shipped release binaries.
-
----
+As part of the same effort, the Rust toolchain was cleared from CT 101 (prod)
+so it can't compile anything: no cargo, no build caches. The build had already
+shifted to the developer machine — `eco up --remote` cross-compiles Rust
+binaries locally and ships them to the CT, so the production estate never
+compiles from source. (This was the beginning of the dedicated-builder era,
+which is itself retired now: the build farm lives on each developer machine.)
 
 ## Key takeaways
 
 1. **Staging-first works.** A full Java backend can be ported to Rust and verified byte-identical against the live Java estate before prod is touched.
 2. **Rust is not just smaller — it's faster under load.** +19% throughput and ~4x lower p95 on identical hardware, identical workload, identical data.
 3. **Memory is the real constraint on a mini PC.** ~28x smaller per service means more domains and more estates fit on the same hardware.
-4. **The toolchain learned a lot.** The migration forced real fixes to eco's dedicated-builder path (atomic artifact transfer, correct source sync, workspace-root targeting) — all now committed upstream.
+4. **The toolchain learned a lot.** The migration forced real fixes to the build/ship path (atomic artifact transfer, correct source sync, workspace-root targeting) — all now committed upstream.
 
 See the [Stress Testing at Scale](/case-study/stress-test) report for the wider Java-vs-Rust estate data, and the [Prod & Staging Workflow](/guide/prod-staging-workflow) guide for the deploy model used here.

@@ -24,18 +24,11 @@ Each domain lives in its own git repository, structured into:
 
 ## The dependency graph
 
-`eco/repos.json` is the source of truth for which domains exist, where they live, and what they require. Dependencies are declared explicitly so they are visible at composition time:
-
-```json
-{
-  "name": "marketplace",
-  "git": "git@github.com:eco/marketplace.git",
-  "branch": "main",
-  "requires": ["auth", "inventory", "photos", "notifications"]
-}
-```
-
-If domain A requires domain B, that relationship is declared and enforced during setup.
+Reusable capabilities are versioned **LXS** packages resolved from the
+[LXS registry](/ecosphere/lxs-registry); source-composed domains (`path:`
+services) ship from the developer workspace. Dependencies are declared
+explicitly so they are visible at composition time — each domain's contract
+(`lxs.yml` or `README.md`) lists what it requires.
 
 ## Dependencies are explicit
 

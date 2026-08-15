@@ -15,8 +15,8 @@ Before the registry, ports lived in ephemeral `.env` files and a
 - **Cross-estate collisions** — nothing stopped two estates on the same CT
   from picking the same random port.
 - **No durable identity** — deleting a `.env` file meant the next `eco up`
-  allocated a *new* port, silently breaking the tunnel origin, PM2 config,
-  and every database link that referenced the old one.
+  allocated a *new* port, silently breaking the tunnel origin, the service
+  config, and every database link that referenced the old one.
 
 The registry makes port identity durable and CT-wide. A port is allocated
 **once and never changes**; every later run returns the same assignment.
@@ -31,9 +31,9 @@ to encrypt database passwords before they are stored. The registry path can
 be overridden with `ECO_REGISTRY_PATH`; the allocation scope with
 `ECO_REGISTRY_SCOPE` (defaults to the hostname).
 
-The registry is backed by SQLite via the `sql.js` WASM build — no native
-binary, so it runs identically on Linux CTs, Apple Silicon, and old Intel
-Macs.
+The registry is backed by SQLite via native **rusqlite** (bundled in the Rust
+binary) — no separate runtime, so it runs identically on Linux CTs, Apple
+Silicon, and old Intel Macs.
 
 ## Scope: one collision-free namespace per machine
 
@@ -76,7 +76,6 @@ eco ports release <service>    # free one service
 eco ports reset                # free the whole project
 eco ports reserved             # system-reserved ports
 eco ports dbs                  # managed databases for the project
-eco dashboard [ctid]           # live estate summary from the registry + PM2
 ```
 
 ## Consistency
@@ -101,9 +100,9 @@ immutable. Two layers make it recoverable without any port changing:
    ```
 
 2. **Live-state harvest** — if no backup exists, the next `eco up`
-   reconstructs the exact ports from the PM2 daemon's live process env
-   (`pm2 jlist`) instead of allocating fresh. Recovery order per service:
-   registry → eco-generated `ecosystem.config.js` → live PM2 env → `.env` →
+   reconstructs the exact ports from the live process env instead of
+   allocating fresh. Recovery order per service:
+   registry → eco-generated `ecosystem.config.js` → live process env → `.env` →
    fresh random allocation. This protects the tunnel origin, gateway port,
    and every database link.
 

@@ -33,7 +33,7 @@ The Go service was not broken. It was **the only non-Rust domain in the estate**
 The Stuff8 estate had 9 domains. 8 were Rust (auth, profile, photos, inventory, marketplace, bidding, chat, email-manager). One was Go. This meant:
 
 1. **Two toolchains on every CT**: Rust (`cargo`, `rustc`) and Go (`go`, `gcc`). Eco provisions both, but provisioning one is cheaper than two.
-2. **Two build systems**: The deploy webhook ran `cargo build` for 8 crates and `go build` for 1. Two separate caching strategies, two potential build failures.
+2. **Two build systems**: builds ran `cargo build` for 8 crates and `go build` for 1. Two separate caching strategies, two potential build failures.
 3. **One extra process**: `pm2 ls` showed 12 entries instead of 11. The Go service consumed ~10 MB — small, but not zero.
 4. **Single-binary roadblock**: The `target_mode: single-binary` experiment collapsed all Rust domains into one binary using a Cargo workspace. Go can't participate in a Cargo workspace. The Go service was the only thing keeping the estate from being truly unified.
 

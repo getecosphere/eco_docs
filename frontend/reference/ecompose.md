@@ -11,7 +11,7 @@ project: stuff8
 ct:
   id: 101
   hostname: stuff8
-  template: local:vztmpl/eco-npm-rust-mongo_1_amd64.tar.zst
+  template: local:vztmpl/debian-12-standard_12.12-1_amd64.tar.zst
   storage: local-lvm
   disk: 16
   bridge: vmbr0
@@ -31,36 +31,10 @@ expose:
     - hostname: photos.stuff8.com
       service: photos-backend
 
-deploy:
-  github:
-    enabled: true
-    branch: main
-    debounce_ms: 15000
-    webhook_port: 8790
-    webhook_path: /__eco/github/deploy
-
 storage:
   minio:
     ct: storage
     region: us-east-1
-
-shared_tools:
-  - git
-  - openssh-client
-  - curl
-  - jq
-  - ca-certificates
-
-domains:
-  - auth
-  - photos
-  - inventory
-  - marketplace
-  - bidding
-  - stuff8_core
-  - chat
-  - profile
-  - notifications
 
 services:
   stuff8-frontend:
@@ -72,6 +46,10 @@ services:
     runtimes:
       - rust
       - mongodb@7
+  notifications-backend:
+    lxs: notifications@1.0.0
+    grants:
+      secrets: [JWT_SECRET, MONGODB_URI]
 ```
 
 ## Top-level keys
@@ -81,15 +59,15 @@ services:
 | `project` | The estate/project name |
 | `ct` | Proxmox CT metadata used by `eco ct create` |
 | `expose` | Public exposure metadata |
-| `deploy` | GitHub webhook deployment |
 | `storage` | S3-compatible MinIO declaration |
-| `shared_tools` | OS packages installed by `provision.sh` |
-| `domains` | Composed domains (from `repos.json`) |
+| `domains` | Composed domains (legacy catalog form; source domains can also be composed via `services[].path`) |
 | `services` | Service runtime requirements |
+| `staging` | A second footprint on another CT, deployed with `eco up --remote --staging` |
 
 ## Services
 
-Each service declares where it lives and what runtimes it needs:
+Each service declares where it lives (a `path:` source dir, or an `lxs:`
+registry capability) and what runtimes it needs:
 
 ```yaml
 services:
@@ -99,21 +77,29 @@ services:
       - rust
       - mongodb@7
       - redis@7
+  chat-gateway:
+    lxs: chat@1.0.0
+    grants:
+      secrets: [JWT_SECRET, REDIS_URL]
 ```
 
-Supported runtimes include `node@20`, `rust`, `mongodb@7`, `postgresql@15`, `golang`, `redis@7`, `npm`, `pm2`, `maven`.
+Supported runtimes include `node@20`, `rust`, `mongodb@7`, `postgresql@15`,
+`golang`, `redis@7`, `npm`, `maven`.
+
+### Source vs LXS
+
+- **`path:` services** ship from the developer workspace via `eco up --remote`.
+  The source is built on your machine and the artifact installed into the CT.
+- **`lxs:` services** are resolved from the LXS registry by version — the
+  compiled binary is pulled, installed, and run; no source and no build step
+  at all.
 
 ## Per-estate branch overrides
 
-A domain's branch can be overridden for one estate only:
-
-```yaml
-domains:
-  - auth: rust-implementation   # this estate uses the rust-implementation branch
-  - photos
-```
-
-`repos.json`'s `branch` field is always `main` — the shared catalog. Overrides apply wherever a domain's branch would otherwise come from `repos.json`.
+There is no central `repos.json` catalog anymore. A `path:` service ships
+whatever source the developer workspace has checked out, so the deployed code
+is exactly the local revision. The `domains:` list with branch overrides
+(`- auth: rust-implementation`) remains supported for legacy manifests.
 
 ## Exposure
 
@@ -142,16 +128,13 @@ expose:
       service: gameserver
 ```
 
-## CI/CD
+## Staging
+
+A second footprint on a separate CT, deployed explicitly:
 
 ```yaml
-deploy:
-  github:
-    enabled: true
-    branch: main
-    debounce_ms: 15000
-    webhook_port: 8790
-    webhook_path: /__eco/github/deploy
+staging:
+  ct: 1000
 ```
 
-Webhook registration belongs to `eco up`, not manual repo-by-repo server setup.
+`eco up --remote --staging` provisions and deploys it at `staging-<hostname>`.

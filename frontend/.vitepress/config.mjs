@@ -117,7 +117,7 @@ export default withMermaid(
               { text: 'The Resource Registry', link: '/concepts/registry' },
               { text: 'Composition', link: '/concepts/composition' },
               { text: 'Scaling', link: '/concepts/scaling' },
-              { text: 'CI/CD — built in', link: '/concepts/cicd' },
+              { text: 'Deploy', link: '/concepts/cicd' },
               { text: 'What is Proxmox?', link: '/concepts/proxmox' }
             ]
           }

@@ -32,12 +32,12 @@ A CT is a *machine* — it has its own filesystem, its own users, its own networ
 |  | CT 101 (estate) |  | CT 102 (estate)  |  |
 |  |  - stuff8.com   |  |  - another.com   |  |
 |  |  - services     |  |  - services      |  |
-|  |  - PM2          |  |  - PM2           |  |
+|  |  - systemd      |  |  - systemd       |  |
 |  +-----------------+  +------------------+  |
 +---------------------------------------------+
 ```
 
-Per-application isolation lives at this boundary — a whole application estate is one CT, and multiple estates can share one CT safely (different ports, `.env`, PM2 processes, databases).
+Per-application isolation lives at this boundary — a whole application estate is one CT, and multiple estates can share one CT safely (different ports, `.env`, systemd units, databases).
 
 ### 3. Thin-provisioned storage has two capacity limits
 

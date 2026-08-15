@@ -14,24 +14,24 @@ This is not Docker reimplemented. It is a host-native Compose-and-image-like wor
 
 ## The pieces
 
-- **`ecompose.yml`** — declares the estate: CT metadata, shared tools, services, runtimes, domains, exposure, CI/CD
-- **`provision.sh`** — installs the declared runtimes and binaries (idempotent, CT-wide)
-- **`configure.sh`** — wires ports, `.env`, shared JWT state, PM2 definitions
-- **`repos.json`** — the domain catalog for composition
+- **`ecompose.yml`** — declares the estate: CT metadata, shared tools, services, runtimes, domains, exposure
+- **`provision.sh`** — installs the declared runtimes on the dev machine (prod CTs install only runtime deps)
+- **`configure.sh`** — wires ports, `.env`, shared JWT state, PM2/systemd definitions
+- **The LXS registry** — the catalog of reusable versioned capabilities
 
-## Bootstrap + composition repos
+## Estate repo
 
-`eco startproject` creates two repositories:
-
-- **`<project>_bootstrap`** — lightweight estate deployment definition (`ecompose.yml`)
-- **`<project>_composition`** — orchestrates domains into the user experience, holding the primary `frontend/`
+`eco startproject` creates the estate repository (suggested `<project>_core`),
+owning `ecompose.yml` and the primary `frontend/`. There is no separate
+`*_bootstrap`/`*_composition` pair for new estates; the estate repo self-declares
+its git origin in `ecompose.yml` (`composition.git`).
 
 ## Composition contract
 
 - **Per-application isolation, not per-service isolation** — isolation is provided by the CT at the application boundary
 - **Eco is the sanctioned orchestrator** — workspace composition, provisioning, and wiring converge here
 - **Dependencies are visible at composition time** — a `requires` relationship is declared and enforced during setup
-- **Runtime wiring is an architectural concern** — port assignment, `.env`, secrets, and PM2 definitions enforce boundaries
+- **Runtime wiring is an architectural concern** — port assignment, `.env`, secrets, and systemd definitions enforce boundaries
 
 ## Frontend peer URLs
 

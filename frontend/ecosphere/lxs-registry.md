@@ -65,8 +65,8 @@ services:
       secrets: [JWT_SECRET, MONGODB_URI]
 ```
 
-`eco up` then pulls the versioned binary from the registry, installs it into the
-CT, and lets `configure.sh` handle ports, PM2, and gateway routing exactly as it
+`eco up --remote` then pulls the versioned binary from the registry, installs it into the
+CT, and lets `configure.sh` handle ports, systemd, and gateway routing exactly as it
 does for source services — **without a compiler or build step on the CT**.
 
 ## Why binaries

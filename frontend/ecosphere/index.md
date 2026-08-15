@@ -172,10 +172,10 @@ domain, the composition, the operations — as cheap as possible.
 ## What you can do right now
 
 - Run your estate **locally, for free**, and expose it at
-  `your-name.getecosphere.com` with a single `eco up`.
+  `your-name.getecosphere.com` with `eco up dev` + `eco serve`.
 - Compose **versioned LXS** from the [LXS Registry](/ecosphere/lxs-registry) —
   auth, notifications, photos, email-manager, profile, chat — instead of
-  building them. `eco up` pulls the verified binary; no compiler on the CT.
+  building them. `eco up --remote` ships the verified binary; no compiler on the CT.
 - Use the free tier of ready LXS; upgrade for enterprise domains and capacity.
 - Publish your own LXS to the registry and let others compose it.
 - Follow the tutorial to see how far a free budget goes:

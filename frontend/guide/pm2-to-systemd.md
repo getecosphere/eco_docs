@@ -51,8 +51,7 @@ WantedBy=multi-user.target
 - `configure.sh` writes the units (gated by `ECO_SYSTEMD=1`)
 - the deploy stops old PM2 apps, then `systemctl daemon-reload` + `enable` +
   `reset-failed` + `restart` for each unit
-- the GitHub deploy webhook restarts via `systemctl` too (it's its own unit)
-- the webhook receiver is a unit running `eco webhook-server`
+- the `eco serve` agent itself runs as a unit
 
 ## What actually bit us (the journey)
 
@@ -80,9 +79,8 @@ These are the real bugs we hit migrating the assessment estate on staging:
 ## Status
 
 - [x] `configure.sh` emits systemd units (`ECO_SYSTEMD=1`)
-- [x] `eco up --remote` deploys + restarts via `systemctl`; webhook receiver is
-      a unit
-- [x] Migrated **assessment staging (CT 1000)** — all 8 services + webhook on
-      systemd, PM2 removed from the CT, frontend serving HTTP 200
+- [x] `eco up --remote` deploys + restarts via `systemctl`
+- [x] Migrated **assessment staging (CT 1000)** — all 8 services on systemd,
+      PM2 removed from the CT, frontend serving HTTP 200
 - [ ] Migrate the remaining staging estates (stuff8, getecosphere, chronic)
 - [ ] Purge node/npm/pm2 from CT 101 (production)

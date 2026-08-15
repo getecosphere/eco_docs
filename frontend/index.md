@@ -28,15 +28,15 @@ features:
   - title: Estates, not images
     details: One Proxmox CT is the machine boundary. An estate is the composition boundary. Services run natively, not in containers.
   - title: Docker-like workflow
-    details: ecompose.yml + eco up give you the reproducibility of compose, mapped onto native CT provisioning and PM2.
+    details: ecompose.yml + eco up give you the reproducibility of compose, mapped onto native CT provisioning and systemd.
   - title: One manifest to rule them
-    details: CT metadata, runtimes, domains, exposure, and CI/CD are all declared in a single ecompose.yml.
+    details: CT metadata, runtimes, domains, and exposure are all declared in a single ecompose.yml.
   - title: Built-in exposure
     details: Cloudflare tunnel → proxy CT → estate gateway → services. One public hostname per estate, managed by Eco.
   - title: Show it publicly — free
     details: "eco serve turns your locally-running app into a real public URL on a *.getecosphere.com subdomain. No domain to buy, no server to rent, HTTPS included. Start free; pay only when the app earns."
-  - title: Webhook deploys
-    details: Push to main and Eco pulls, rebuilds, and reloads every service in the estate automatically.
+  - title: Build locally, ship the binary
+    details: The build farm is on your machine — `eco up --remote` cross-compiles and ships artifacts. No build server, no toolchain on the CT.
   - title: Any new staff can produce
     details: Supporting domains are done already. New joiners compose veteran-designed contracts and ship — no years of hidden knowledge required.
   - title: A complete, holistic solution

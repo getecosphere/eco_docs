@@ -38,7 +38,7 @@ Adding it meant:
          - rust
          - mongodb@7
    ```
-3. **Run it** — `eco up`
+3. **Run it** — `eco up dev` (local) or `eco up --remote` (deploy)
 
 Eco then does the rest:
 
@@ -46,7 +46,7 @@ Eco then does the rest:
 - wires `.env` with `MONGODB_URI` and `DEEPSEEK_API_KEY`
 - routes `/api/rag/*` through the estate gateway
 - exposes the service URL to consuming frontends (`PUBLIC_RAG_URL=`)
-- restarts the service under PM2
+- restarts the service under systemd (PM2 in local dev)
 
 The domain owned its whole lifecycle — ingestion, chunking, embedding, retrieval, chat — and the estate absorbed it without touching a single existing service. **That is what a supporting domain means in Eco: pluggable capability, not a rewrite.**
 

@@ -1,27 +1,35 @@
 # Domain Catalog
 
-The domain catalog is Eco's registry of reusable building blocks. It lives in `eco/repos.json` — the single source of truth for which domains exist, where they live, what they require, and how they are composed into estates.
+The reusable domains ship as **LXS** (versioned Linux services) through the
+[LXS registry](/ecosphere/lxs-registry), and source-composed domains travel
+with the developer workspace. There is no central `repos.json` catalog
+anymore.
 
 ## How the catalog works
 
-Each entry declares a domain's identity and its dependency graph:
+Each LXS carries its contract in `lxs.yml` — required/optional env, database,
+network, resources — plus a `docs/` bundle that describes its API. An estate
+composes a capability by version:
 
-```json
-{
-  "name": "notifications",
-  "description": "Reusable in-app notifications domain: persistent notifications, read/unread state, unread counts, and realtime WebSocket delivery",
-  "git": "git@github.com:eco/notifications.git",
-  "branch": "main",
-  "requires": ["auth"]
-}
+```yaml
+services:
+  notifications-backend:
+    lxs: notifications@1.0.0
+    grants:
+      secrets: [JWT_SECRET, MONGODB_URI]
 ```
 
-- `name` — the domain identity used in `ecompose.yml` (`domains:` list)
-- `git` — where the domain lives
-- `branch` — the shared catalog branch (`main`); estates can override per-project
-- `requires` — declared dependencies, enforced during composition
+While a domain is still in development, it is composed from source instead:
 
-A composition app declares the domains it wants; Eco clones them, resolves the dependency graph, and wires them together. **Adding a domain to an estate is adding a line to the `domains:` list.**
+```yaml
+services:
+  notifications-backend:
+    path: notifications/backend
+```
+
+A composition app declares the capabilities it wants; Eco resolves them from
+the registry (or ships the workspace source) and wires them together.
+**Adding a domain to an estate is adding a line to the `services:` list.**
 
 ## Reusable support domains
 

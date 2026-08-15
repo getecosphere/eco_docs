@@ -6,61 +6,69 @@ This page walks through the actual command flow for a complete estate lifecycle.
 
 ```bash
 # From the estate root (where ecompose.yml lives)
-eco up
+eco up dev
 ```
 
-This behaves like `docker compose up`. Eco:
+This behaves like `docker compose up` on your machine. Eco:
 
 1. Reads `ecompose.yml` from the current directory
-2. Clones any missing composed domain repos
-3. Provisions the declared runtimes
-4. Generates `.env` files
-5. Generates the PM2 ecosystem config
-6. Builds and starts services in dependency-aware order
+2. Provisions the declared runtimes locally
+3. Generates `.env` files
+4. Builds Rust services and installs frontend dependencies
+5. Starts services (under PM2 locally)
 
-Stop log tailing with `Ctrl+C` — services keep running under PM2.
+Stop log tailing with `Ctrl+C` — services keep running.
 
 ## Production deployment
 
-On the Proxmox host:
+From the same estate root, on your developer machine:
 
 ```bash
-cd /root/<project>_bootstrap
-eco up
+eco up --remote
 ```
 
-In production `eco up` also:
+The build farm is *your machine*. `eco up --remote`:
 
+- Cross-compiles Rust services for Linux (`x86_64-unknown-linux-musl`)
+- Builds frontends and (optionally) Bun-compiles Node apps to single binaries
+- Ships source + artifacts to the `eco serve` agent on the Proxmox host
 - Creates or reuses the declared CT
-- Syncs all domain source repos into the CT
-- Builds Rust services (optionally on a dedicated builder CT)
+- Installs the shipped binaries and dist (the CT never compiles)
 - Creates databases and runs migrations
-- Generates the Caddy gateway config
-- Provisions the Cloudflare tunnel + DNS record
-- Registers GitHub webhooks (if `deploy.github.enabled`)
+- Generates the gateway config + `.env` via `configure.sh`
+- Restarts services under systemd
+
+## Staging
+
+```bash
+eco up --remote --staging    # deploy to the staging footprint (staging.ct)
+```
 
 ## After changes
 
 ```bash
-cd /root/<project>_bootstrap && git pull && eco up
+# from the estate root
+eco up --remote --staging    # preview on staging
+# ...verify...
+eco up --remote              # deploy to production
 ```
 
-Or push to `main` — the webhook triggers an estate-wide redeploy automatically.
+No webhook, no push-to-deploy — the deploy is whatever you explicitly run.
 
 ## Diagnostics
 
 ```bash
-eco show           # show the composed project structure
-eco provision --plan   # preview runtime provisioning
-eco up --dry-run   # preview the up plan
-eco prox showports # list all port variables on the CT
+eco show                # show the composed project structure
+eco up --remote --dry-run   # preview the remote deploy plan
+eco up dev --dry-run    # preview the local plan
+eco prox showports      # list all port variables on the CT
 ```
 
 ## Useful command groups
 
 - `eco git ...` — cross-repo git operations
 - `eco ct ...` — Proxmox CT lifecycle
-- `eco expose` — public exposure / tunnel management
-- `eco prox clearenv` — force port reallocation
+- `eco serve <name>` — expose a locally-running app at a public URL
+- `eco lxs ...` — browse and compose versioned LXS capabilities
 
 See the [CLI reference](/reference/cli) for the full list.

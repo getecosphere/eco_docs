@@ -28,7 +28,7 @@ Eco was first committed to on **29 June 2026**. From day one it was designed aro
 | **Isolation granularity** | per service | per estate (one Proxmox CT) |
 | **Reproducibility** | `Dockerfile` image | `provision.sh` runtime install + `ecompose.yml` |
 | **Orchestration** | `docker-compose.yml` | `ecompose.yml` + `eco up` |
-| **Process manager** | container daemon | PM2 |
+| **Process manager** | container daemon | systemd (PM2 in local dev) |
 | **Dev workstation load** | images, layers, daemon | plain processes + shared runtimes |
 | **AI/agent iteration cost** | rebuilds, pulls, overlay mounts | instant native restarts |
 | **Registry needed** | image registry (public/private) | none — git repos are the unit |

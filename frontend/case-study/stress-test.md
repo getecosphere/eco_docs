@@ -117,7 +117,7 @@ These are not synthetic benchmarks. They are real production estates, running re
 
 ### Why the gap matters
 
-On a mini PC with 7.3 GiB of RAM running five estates, every megabyte counts. The Java application's two Spring Boot services consume ~584 MB together. The ten Rust services in Stuff8 consume ~70 MB total. That is 514 MB — over half a gigabyte — that the Rust estate leaves for other workloads, for the OS page cache, for MongoDB and PostgreSQL, for the PM2 process manager, for the next estate you compose.
+On a mini PC with 7.3 GiB of RAM running five estates, every megabyte counts. The Java application's two Spring Boot services consume ~584 MB together. The ten Rust services in Stuff8 consume ~70 MB total. That is 514 MB — over half a gigabyte — that the Rust estate leaves for other workloads, for the OS page cache, for MongoDB and PostgreSQL, and for the next estate you compose.
 
 In a Docker/Kubernetes world, you throw more nodes at the problem. In Eco's world, where one CT is the machine boundary, **memory per service is the hard limit on how many domains you can compose**. Rust raises that limit by an order of magnitude.
 
@@ -143,7 +143,7 @@ The Cloudflare tunnel process on the proxy CT was a single `cloudflared` Go bina
 
 **After (4 replicas):** 184ms avg at 200 VUs — a 30x improvement. The Cloudflare path now saturates at ~100 req/s, which is the office ISP's upload bandwidth limit (~10-20 Mbps), not the application or the tunnel software.
 
-To achieve this, Eco now supports `expose.tunnel_replicas` in `ecompose.yml` and prompts for replica count during `eco up` (default: 3):
+To achieve this, Eco now supports `expose.tunnel_replicas` in `ecompose.yml` (default: 3):
 
 ```yaml
 expose:

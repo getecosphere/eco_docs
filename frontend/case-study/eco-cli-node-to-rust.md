@@ -29,15 +29,14 @@ That rule made sense while the CLI was just a thin dispatcher over proven Bash s
 
 `eco` is not a convenience. It is the **control plane** of every estate:
 
-- `eco up` creates the CT, provisions runtimes, clones domains, generates `.env`, starts PM2, and exposes the estate through Cloudflare — in one command
-- `eco configure` regenerates every service's environment and PM2 config from `ecompose.yml`
-- `eco startproject` scaffolds an entire estate from reusable domains and pushes the bootstrap/composition repositories to GitHub
+- `eco up --remote` cross-compiles + ships to the `eco serve` agent, which provisions the CT, installs artifacts, generates `.env`, and starts services — in one command
+- `eco configure` regenerates every service's environment and PM2/systemd config from `ecompose.yml`
+- `eco startproject` scaffolds an entire estate from reusable domains and pushes the estate repository to GitHub
 - `eco expose` wires the Cloudflare tunnel and DNS record
 - `eco sync` streams production databases down to a dev machine
-- `eco prox` manages CTs, tunnels, archives, and Rust builder infrastructure
-- `eco webhook-server` (formerly a Node process) receives GitHub pushes and redeploys estates
+- `eco prox` manages CTs, tunnels, and archives
 
-When this command runs, it is **on the Proxmox host and inside every CT**. It is what a deploy webhook launches to rebuild a production estate. It is the tool an operator reaches for during an incident. It is, in other words, an always-on piece of production infrastructure — which is precisely the thing Eco's own philosophy says should be a small native binary, not a Node package.
+When this command runs, it is **on the Proxmox host and inside every CT**. It is what a remote deploy launches to update a production estate. It is the tool an operator reaches for during an incident. It is, in other words, an always-on piece of production infrastructure — which is precisely the thing Eco's own philosophy says should be a small native binary, not a Node package.
 
 > If a domain service had the same availability profile as the CLI — started by every deploy, present on every machine, part of every incident — we would never have allowed it to be a Node package. The CLI was a 100 MB Node application running on every CT for years, and we only noticed because we finally asked the question.
 
@@ -60,7 +59,7 @@ The absurdity is easy to state: **Eco's CLI was the single largest thing Eco dep
 
 ### The pain you feel on every deploy
 
-A webhook deploy's `redeploy.sh` did:
+Back when deploys were webhook-triggered, a deploy's `redeploy.sh` did:
 
 ```bash
 cd /opt/projects/eco
@@ -82,16 +81,20 @@ A Node CLI carries its assets as files on disk next to the script. The Rust bina
 
 - `configure.sh` — the estate configurator (3,600+ lines)
 - `provision.sh` — the runtime provisioner (1,100+ lines)
-- `init.sh`, `git.sh`, `tree.sh`, `install-*.sh` — the workflow scripts
-- `repos.json` — the domain catalog
+- `git.sh`, `tree.sh`, `install-*.sh` — the workflow scripts
 - `assets/ecology-mark.webp` — the starter image used by `eco startproject`
 
 On first run the binary materializes those scripts to a cache directory (`~/.cache/eco/bundled/`) and executes them through `bash`, preserving the exact behavior the Node version had. The scripts never change on disk; they ship inside the executable.
 
-### Two Node processes became internal commands
+### One Node process became an internal command
 
 - `src/bin/registry-cli.js` → **`eco registry`** — the port/database allocation backend, now rusqlite (a real native SQLite) with AES-256-GCM secret encryption
-- `src/runtime/github-webhook-receiver.js` → **`eco webhook-server`** — the GitHub deploy receiver, now a native Rust HTTP server
+
+The other Node process — `src/runtime/github-webhook-receiver.js` — was the
+GitHub deploy receiver. It did **not** survive the migration as a shipped
+subcommand: the webhook-triggered deploy model was retired entirely once the
+build moved to developer machines (`eco up --remote`), so the receiver was
+removed rather than ported.
 
 ### The result
 
@@ -106,7 +109,7 @@ AFTER   eco = ONE compiled binary (rust/target/release/eco)
 | Runtime needed | Node.js on host + every CT | none |
 | Install on CT | `npm install && npm link` | copy one file |
 | Registry | sql.js (WASM SQLite inside Node) | native rusqlite |
-| Webhook receiver | separate Node HTTP process | built-in `eco webhook-server` |
+| Webhook receiver | separate Node HTTP process | removed (webhook deploys retired) |
 | Bundled scripts | files on disk | embedded, extracted on first run |
 | Deploy tax | `npm install` on every push | none |
 
@@ -146,7 +149,7 @@ Now the whole chain is native:
 
 ```text
 eco (Rust binary)
-  └── provision.sh / configure.sh / init.sh / git.sh (embedded in the binary)
+  └── provision.sh / configure.sh / git.sh (embedded in the binary)
         └── domains (Rust binaries)
               └── Proxmox CT (native processes)
 ```
@@ -157,6 +160,6 @@ No interpreter anywhere in the chain. The orchestrator and the orchestrated are 
 
 ## Would we do it again
 
-Yes — and if we were starting over, we would still port the CLI *after* the domains, but we would budget for it as a first-class workstream rather than a trailing chore. The two-node island (CLI + webhook receiver) was the last place where Eco shipped something that did not match its own philosophy of "smallest runtime that does the job." Now it does.
+Yes — and if we were starting over, we would still port the CLI *after* the domains, but we would budget for it as a first-class workstream rather than a trailing chore. The Node island (CLI + the deploy receiver that was later retired with webhook deploys) was the last place where Eco shipped something that did not match its own philosophy of "smallest runtime that does the job." Now it does.
 
 See: [Why Eco promotes Rust](/why/why-rust), [The story behind Eco](/why/story), [Architecture](/reference/architecture).

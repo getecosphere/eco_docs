@@ -8,7 +8,7 @@ Below are the runtimes Eco provisions today, with the languages most commonly us
 
 <img src="/langs/rust.svg" width="48" height="48" alt="Rust logo" style="float:left;margin:0 16px 16px 0" />
 
-Rust (with the **axum** web framework) is the workhorse of Eco estates. It powers `auth`, `photos`, `inventory`, `marketplace`, `bidding`, `chat`, `profile`, and the RAG domain. Services are compiled to native binaries, run via PM2, and are cheap to operate — a deliberate response to the heavyweight JVM services that preceded them.
+Rust (with the **axum** web framework) is the workhorse of Eco estates. It powers `auth`, `photos`, `inventory`, `marketplace`, `bidding`, `chat`, `profile`, and the RAG domain. Services are cross-compiled on the developer machine into native binaries, shipped to the CT, and run under systemd — cheap to operate, a deliberate response to the heavyweight JVM services that preceded them.
 
 Rust domains typically pair with **MongoDB**, **Redis**, and **MinIO/S3** runtimes.
 
@@ -22,7 +22,7 @@ Go powers the **notifications** domain — a persistent, realtime in-app notific
 
 <img src="/langs/nodejs.svg" width="48" height="48" alt="Node.js logo" style="float:left;margin:0 16px 16px 0" />
 
-Node.js (v20) is the runtime for every frontend and composition app. Eco's own CLI is Node.js too. Frontends are built with modern frameworks and deployed as static or SSR apps under PM2.
+Node.js is the runtime for frontends and composition apps. (Eco's own CLI is a compiled Rust binary, not Node.) Frontends are built on the developer machine and shipped as `dist`; Node backends can be Bun-compiled into single linux-x64 binaries so the CT needs no Node at all.
 
 ## TypeScript — frontend composition
 
@@ -37,7 +37,7 @@ TypeScript is used across the Eco frontend ecosystem — in **Nuxt.js** composit
 <img src="/langs/nextjs.svg" width="48" height="48" alt="Next.js logo" style="float:left;margin:0 16px 16px 0" />
 <img src="/langs/tailwindcss.svg" width="48" height="48" alt="Tailwind CSS logo" style="float:left;margin:0 16px 16px 0" />
 
-- **Nuxt.js + Vue** — supported composition frontend framework; run as a dev server (`npm run dev`) under PM2 during development and built for production with `nuxt build`. Used by the Ecosphere platform.
+- **Nuxt.js + Vue** — supported composition frontend framework; run as a dev server (`npm run dev`) locally during development and built for production with `nuxt build`. Used by the Ecosphere platform.
 - **Astro.js + Tailwind CSS** — the primary frontend stack for Eco composition apps (e.g. Stuff8)
 - **Next.js + React** — used for platform and legacy LMS frontends
 - **Tailwind CSS** — the shared styling foundation
@@ -60,7 +60,7 @@ Java (17) + Maven is a supported runtime for legacy services. The original `auth
 
 | Token | Provides |
 | --- | --- |
-| `rust` | rustup + cargo toolchain (system-wide) |
+| `rust` | Rust toolchain on the **developer machine** (production CTs never compile) |
 | `golang` | Go compiler |
 | `node@20` | Node.js 20 |
 | `npm` | Node package manager |
@@ -69,10 +69,10 @@ Java (17) + Maven is a supported runtime for legacy services. The original `auth
 | `mongodb@7` | MongoDB server + drivers |
 | `postgresql@15` | PostgreSQL server |
 | `redis@7` | Redis server |
-| `pm2` | Process manager for all services |
+| `pm2` | Process manager for local dev (systemd on production CTs) |
 
 ## Languages are a domain decision
 
-A domain's `README.md` fixes its contract, including its runtime. Eco doesn't force a language on you — it provisions whatever the service declares and keeps the operational surface identical (ports, `.env`, PM2, gateway routing) regardless.
+A domain's `README.md` fixes its contract, including its runtime. Eco doesn't force a language on you — it provisions whatever the service declares and keeps the operational surface identical (ports, `.env`, systemd, gateway routing) regardless.
 
 See also: [ecompose.yml reference](/reference/ecompose), [Architecture](/reference/architecture).

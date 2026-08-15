@@ -32,7 +32,7 @@ Eco works the same way:
 The root of "ecology" is *oikos* — the Greek word for *household* or *home*. A healthy ecology is one that sustains itself. Eco estates are built to do exactly that:
 
 - **Reproducible** — `ecompose.yml` + provisioned runtimes mean an estate can be rebuilt from scratch
-- **Self-deploying** — push to `main` and the webhook rebuilds the estate
+- **Self-deploying** — build on your machine, ship the binary with one command
 - **Self-hosting** — natively on Proxmox, no per-service daemons to babysit
 - **Self-sustaining** — reusable domains keep feeding new estates, so effort compounds
 

@@ -19,7 +19,7 @@ auth ──HTTP── profile ──HTTP── inventory ──HTTP── market
   │                                   │
   └────────HTTP────── chat ───────────┘
         8 Rust binaries × 8 tokio runtimes
-        8 ports × 8 PM2 processes
+        8 ports × 8 process units
         1 Go notifications service (WebSocket hub, separate process)
         9 MongoDB connection pools total
 ```
@@ -41,7 +41,7 @@ Each domain is a standalone binary. The Go notifications service provided real-t
 │         email-manager                    │
 │                                         │
 │  1 tokio runtime, Steer dispatch        │
-│  1 port, 1 PM2 process                  │
+│  1 port, 1 process unit                 │
 └─────────────────────────────────────────┘
 ```
 
@@ -59,7 +59,7 @@ Measured on CT 101 (Intel i3-1220P, 7.3 GiB RAM, shared with 4 other estates):
 | Single-binary (8 domains) | 1 | 1 (notifications) | 5 | ~60 MB |
 | **Single-binary (9 domains)** | **1** | **0** | **3** | **31 MB** |
 
-The final architecture uses **66% less memory** and **75% fewer PM2 processes** than the original multi-binary deployment. Zero Go dependencies remain.
+The final architecture uses **66% less memory** and **75% fewer process units** than the original multi-binary deployment. Zero Go dependencies remain.
 
 ---
 
@@ -102,11 +102,11 @@ The original stress test proved you can serve 5,000 concurrent users on a $300 m
 
 ### For the operator
 
-Three PM2 entries instead of twelve. One binary to build instead of nine. No Go toolchain to provision. The operational simplicity is as valuable as the memory savings.
+Three units instead of twelve. One binary to build instead of nine. No Go toolchain to provision. The operational simplicity is as valuable as the memory savings.
 
 ### For the architecture
 
-`target_mode: single-binary` in `ecompose.yml` lets Eco automatically collapse all Rust domains into one binary. Remove the field and you're back to multi-binary. The same domain code works in both modes — each domain's `bootstrap()` function is the contract. Eco generates the shim, the workspace, the Caddy gateway config, and the PM2 config automatically.
+`target_mode: single-binary` in `ecompose.yml` lets Eco automatically collapse all Rust domains into one binary. Remove the field and you're back to multi-binary. The same domain code works in both modes — each domain's `bootstrap()` function is the contract. Eco generates the shim, the workspace, the Caddy gateway config, and the service config automatically.
 
 ---
 
@@ -115,8 +115,8 @@ Three PM2 entries instead of twelve. One binary to build instead of nine. No Go 
 1. Every Rust domain was refactored to expose its router as a library (`lib.rs` + `bootstrap()`)
 2. A shim crate `stuff8_binary/` was created that depends on all domain libs and merges them via `tower::Steer`
 3. The Go `notifications` service was rewritten in Rust and added to the shim
-4. `configure.sh` now detects `target_mode: single-binary` and collapses Rust services into one PM2 entry
-5. `up.js` builds the workspace shim instead of per-service binaries
+4. `configure.sh` now detects `target_mode: single-binary` and collapses Rust services into one process unit
+5. the build ships the single binary instead of per-service binaries
 
 ---
 

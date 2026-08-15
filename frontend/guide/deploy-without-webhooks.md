@@ -23,8 +23,8 @@ a clean, inspectable boundary.
 Previously a deploy was wired to GitHub: a push to the deploy branch fired a
 **webhook**, the CT pulled the new source, built it (Rust + `npm ci` + frontend
 build), and PM2 restarted the services. The CT was both a build farm and a
-runtime, and the webhook receiver (`eco webhook-server`) lived on the CT to
-orchestrate that.
+runtime, and a webhook receiver (`github-webhook-receiver.js`) lived on the CT
+to orchestrate that.
 
 ## Why the webhook is gone
 
@@ -81,9 +81,10 @@ eco up --remote ──► build + Bun + ship ──► eco serve agent ──►
 
 ## What this removes
 
-- The GitHub **webhook receiver** on the CT (`eco webhook-server`,
-  `deploy.github` in ecompose.yml, the generated `redeploy.sh`). These are
-  legacy now — kept for old estates, not wired for new deploys.
+- The GitHub **webhook receiver** on the CT (formerly the Node
+  `github-webhook-receiver.js`, then a `webhook-server` concept that never
+  shipped in the Rust binary) plus `deploy.github` in ecompose.yml and the
+  generated `redeploy.sh`. All of it is gone — not kept for old estates.
 - The CT's job as a git consumer: no source pull, no `git clean`, no build
   steps, no `npm ci` for builds on the CT.
 - The shared builder CT as a deploy trigger.

@@ -18,8 +18,8 @@ Multiple estates may share one CT, each declared by its own `ecompose.yml` and b
 ```
 /opt/projects/<project>/
 ├── ecompose.yml          # the estate manifest
-├── <domain>/<service>    # composed domains cloned below the estate root
-└── ecosystem.config.js   # generated PM2 config (CT-local)
+├── <domain>/<service>    # composed source domains
+└── ecosystem.config.js   # generated config (CT-local)
 ```
 
 Sharing is safe because every estate keeps its own:
@@ -27,7 +27,7 @@ Sharing is safe because every estate keeps its own:
 - root directory
 - generated state (`.configure-state`, `.env`)
 - ports (random free ports in 20000–27999, persisted)
-- PM2 processes
+- systemd units / PM2 processes
 - databases (per-project roles)
 
 ### Per-estate generated state
@@ -38,7 +38,6 @@ Never commit these — they are CT-local generated state:
 - `ecosystem.config.js` / `ecosystem.config.cjs`
 - `Caddyfile`
 - `.env` files
-- `.Eco/deploy/`
 
 ## Ports are per-estate by design
 
@@ -49,12 +48,9 @@ Never commit these — they are CT-local generated state:
   port.
 - **Gateway port**: each estate's Caddy gateway binds a distinct internal port
   (never public 80), allocated from the registry.
-- **Webhook port**: each estate's GitHub deploy receiver gets its own free
-  private port in 20000–27999, persisted in `.eco/deploy/github-webhook.json`
-  or set explicitly with `deploy.github.webhook_port`.
 
-Port uniqueness is a **CT-wide** concern — every service, gateway, and webhook
-port across all estates on one CT must be distinct. The registry's
+Port uniqueness is a **CT-wide** concern — every service and gateway port
+across all estates on one CT must be distinct. The registry's
 `(scope, port)` unique index enforces this: a port is allocated once and
 returned unchanged on every later run.
 
