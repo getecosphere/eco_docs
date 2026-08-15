@@ -4,14 +4,14 @@ layout: home
 hero:
   name: Eco
   text: Compose reusable domains into self-sustaining estates
-  tagline: A host-native DDD platform for Proxmox. Build once, reuse everywhere — with a Docker-like developer experience, no Docker required. End-to-end, from a single developer to large teams, in the world of AI. Not yet released — be first to know.
+  tagline: A host-native DDD platform for Proxmox. Build once, reuse everywhere — with a Docker-like developer experience, no Docker required. End-to-end, from a single developer to large teams, in the world of AI. Show your app to the world from your own machine — no domain to buy, no server to rent. Not yet released — be first to know.
   image:
     src: /og-image.png
     alt: Eco
   actions:
     - theme: brand
-      text: Introducing LXS
-      link: /ecosphere/
+      text: Show your app publicly
+      link: /guide/serve
     - theme: alt
       text: Get Started
       link: /guide/getting-started
@@ -33,6 +33,8 @@ features:
     details: CT metadata, runtimes, domains, exposure, and CI/CD are all declared in a single ecompose.yml.
   - title: Built-in exposure
     details: Cloudflare tunnel → proxy CT → estate gateway → services. One public hostname per estate, managed by Eco.
+  - title: Show it publicly — free
+    details: "eco serve turns your locally-running app into a real public URL on a *.getecosphere.com subdomain. No domain to buy, no server to rent, HTTPS included. Start free; pay only when the app earns."
   - title: Webhook deploys
     details: Push to main and Eco pulls, rebuilds, and reloads every service in the estate automatically.
   - title: Any new staff can produce

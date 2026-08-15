@@ -19,6 +19,9 @@ Eco is a Node CLI (`Eco`) with a bundled Bash implementation for workspace-side 
 | `eco up dev` | Local dev mode with direct per-service ports |
 | `eco configure` | Wire env, ports, PM2, gateway |
 | `eco provision` | Install declared runtimes from `ecompose.yml` |
+| `eco serve <name>` | Expose a locally-running dev app at a public `https://<name>.getecosphere.com` URL |
+| `eco serve stop <name>` | Stop + release the tunnel |
+| `eco serve list` | List active tunnels on this host |
 
 ## Operational commands
 

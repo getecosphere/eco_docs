@@ -59,6 +59,7 @@ export default withMermaid(
       nav: [
         { text: 'Ecosphere', link: '/ecosphere/' },
         { text: 'Guide', link: '/guide/getting-started' },
+        { text: 'Show it publicly', link: '/guide/serve' },
         { text: 'Why Eco', link: '/why/eco-vs-docker' },
         { text: 'Concepts', link: '/concepts/domains' },
         { text: 'Reference', link: '/reference/ecompose' },
@@ -85,6 +86,7 @@ export default withMermaid(
             items: [
               { text: 'Getting Started', link: '/guide/getting-started' },
               { text: 'Quick Start', link: '/guide/quick-start' },
+              { text: 'Show your app publicly — eco serve', link: '/guide/serve' },
               { text: 'Dev-toolchain-free CTs', link: '/guide/dev-toolchain-free-cts' },
               { text: 'Deploy without webhooks', link: '/guide/deploy-without-webhooks' },
               { text: 'PM2 → systemd', link: '/guide/pm2-to-systemd' },
