@@ -10,12 +10,19 @@ main: eco_docs
 
 estates:
   eco_docs:
-    hostname: eco.stuff8.com
+    hostname: doc.getecosphere.com
     ingress: tunnel
-    cloudflare_account: stuff8
+    cloudflare_account: getecosphere
     services:
       - eco-docs-frontend
       - email-manager-backend
+
+expose:
+  enabled: true
+  hostname: doc.getecosphere.com
+  service: eco-docs-frontend
+  proxy_ct: 100
+  cloudflare_account: getecosphere
 
 services:
   eco-docs-frontend:

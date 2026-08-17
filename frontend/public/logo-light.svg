@@ -1,4 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
-  <rect width="32" height="32" rx="7" fill="#2563eb"/>
-  <path d="M10 9h12M10 16h12M10 23h12" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+     width="1254" height="1254" viewBox="0 0 1254 1254"
+     role="img" aria-labelledby="title desc">
+  <title id="title">Ecosphere logo</title>
+  <desc id="desc">Official full-color Ecosphere mark, preserved without tracing.</desc>
+  <image width="1254" height="1254"
+         preserveAspectRatio="xMidYMid meet"
+         href="../master/ecosphere-original-1254.png"
+         xlink:href="../master/ecosphere-original-1254.png" />
 </svg>

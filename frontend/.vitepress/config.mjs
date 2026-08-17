@@ -1,7 +1,7 @@
 import { defineConfig } from 'vitepress';
 import { withMermaid } from 'vitepress-plugin-mermaid';
 
-const siteUrl = 'https://eco.stuff8.com';
+const siteUrl = 'https://doc.getecosphere.com';
 const siteTitle = 'Eco — Compose reusable domains into self-sustaining estates';
 const siteDescription =
   'Eco is a host-native DDD platform for Proxmox. Compose reusable domains into self-sustaining application estates with a Docker-like developer experience — no Docker required. Built for the world of AI: end-to-end, from a single developer to large teams.';
@@ -87,6 +87,7 @@ export default withMermaid(
               { text: 'Getting Started', link: '/guide/getting-started' },
               { text: 'Quick Start', link: '/guide/quick-start' },
               { text: 'Show your app publicly — eco serve', link: '/guide/serve' },
+              { text: 'Route protection — deny by default', link: '/guide/route-protection' },
               { text: 'Dev-toolchain-free CTs', link: '/guide/dev-toolchain-free-cts' },
               { text: 'Deploy without webhooks', link: '/guide/deploy-without-webhooks' },
               { text: 'PM2 → systemd', link: '/guide/pm2-to-systemd' },
