@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg"
      xmlns:xlink="http://www.w3.org/1999/xlink"
-     width="1254" height="1254" viewBox="0 0 1254 1254"
+     width="256" height="256" viewBox="0 0 256 256"
      role="img" aria-labelledby="title desc">
   <title id="title">Ecosphere logo</title>
-  <desc id="desc">Official full-color Ecosphere mark, preserved without tracing.</desc>
-  <image width="1254" height="1254"
+  <desc id="desc">Official full-color Ecosphere mark on a transparent background.</desc>
+  <image width="256" height="256"
          preserveAspectRatio="xMidYMid meet"
-         href="../master/ecosphere-original-1254.png"
-         xlink:href="../master/ecosphere-original-1254.png" />
+         href="/ecosphere-logo.png"
+         xlink:href="/ecosphere-logo.png" />
 </svg>
