@@ -4,14 +4,14 @@ import { withMermaid } from 'vitepress-plugin-mermaid';
 const siteUrl = 'https://docs.getecosphere.com';
 const siteTitle = 'Ecosphere — Compose reusable domains into self-sustaining estates';
 const siteDescription =
-  'Ecosphere is a host-native DDD platform for Proxmox. Compose reusable domains into self-sustaining application estates with a Docker-like developer experience — no Docker required. Built for the world of AI: end-to-end, from a single developer to large teams.';
+  'Stop rebuilding software — start composing capabilities. Ecosphere turns executable capabilities into reusable Linux Services that compose into complete applications, from a single developer to large teams, in the world of AI. Show your app to the world from your own machine: no domain to buy, no server to rent.';
 
 const jsonLd = JSON.stringify({
   '@context': 'https://schema.org',
   '@type': 'SoftwareApplication',
   name: 'Ecosphere',
   applicationCategory: 'DeveloperApplication',
-  operatingSystem: 'Proxmox VE, Linux, macOS',
+  operatingSystem: 'Linux, macOS, Windows',
   description: siteDescription,
   url: siteUrl,
   publisher: {

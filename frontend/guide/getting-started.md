@@ -2,8 +2,6 @@
 
 eco is a **compiled Rust CLI** that manages large-scale projects using Domain-Driven Design. It decomposes projects into independent, self-sustaining domains that can be reused and recomposed into new projects. Builds happen on your machine; the artifacts ship to the server.
 
-> **Ecosphere is not released yet.** The public installer and distribution channels are coming soon. The commands below show what the workflow will look like; watch this space.
-
 ## Requirements
 
 - A Proxmox VE host with the `eco serve` agent running (the deploy endpoint)
@@ -11,15 +9,13 @@ eco is a **compiled Rust CLI** that manages large-scale projects using Domain-Dr
 - git
 - A GitHub account with a personal access token (for `startproject` creating repos)
 
-## Install — coming soon
+## Install
 
-Ecosphere has not been released publicly yet. When it is, installation will be a single command:
+Installation is a single command:
 
 ```bash
 curl -fsSL https://getecosphere.com/install.sh | sh
 ```
-
-Until then, eco runs from source in development.
 
 Verify the install:
 

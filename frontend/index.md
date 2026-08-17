@@ -4,7 +4,7 @@ layout: home
 hero:
   name: Ecosphere
   text: Compose reusable domains into self-sustaining estates
-  tagline: A host-native DDD platform for Proxmox. Build once, reuse everywhere — with a Docker-like developer experience, no Docker required. End-to-end, from a single developer to large teams, in the world of AI. Show your app to the world from your own machine — no domain to buy, no server to rent. Not yet released — be first to know.
+  tagline: "Stop rebuilding software — start composing capabilities. Ecosphere turns executable capabilities into reusable Linux Services that compose into complete applications — from a single developer to large teams, in the world of AI. Show your app to the world from your own machine: no domain to buy, no server to rent."
   image:
     src: /og-image.png
     alt: Ecosphere
