@@ -4,7 +4,7 @@ import { withMermaid } from 'vitepress-plugin-mermaid';
 const siteUrl = 'https://docs.getecosphere.com';
 const siteTitle = 'Ecosphere — Compose reusable domains into self-sustaining estates';
 const siteDescription =
-  'Stop rebuilding software — start composing capabilities. Ecosphere turns executable capabilities into reusable Linux Services that compose into complete applications, from a single developer to large teams, in the world of AI. Show your app to the world from your own machine: no domain to buy, no server to rent.';
+  'Stop rebuilding software — start composing capabilities. Ecosphere turns executable capabilities into reusable Linux Services (LXS) that compose into complete application estates, from a single developer to large teams, in the world of AI.';
 
 const jsonLd = JSON.stringify({
   '@context': 'https://schema.org',

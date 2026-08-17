@@ -4,7 +4,7 @@ layout: home
 hero:
   name: Ecosphere
   text: Compose reusable domains into self-sustaining estates
-  tagline: "Stop rebuilding software — start composing capabilities. Ecosphere turns executable capabilities into reusable Linux Services that compose into complete applications — from a single developer to large teams, in the world of AI. Show your app to the world from your own machine: no domain to buy, no server to rent."
+  tagline: "Stop rebuilding software — start composing capabilities. Ecosphere turns executable capabilities into reusable Linux Services (LXS) that compose into complete application estates — from a single developer to large teams, in the world of AI."
   image:
     src: /og-image.png
     alt: Ecosphere
