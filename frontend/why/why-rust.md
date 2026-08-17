@@ -1,6 +1,6 @@
-# Why Eco promotes Rust
+# Why Ecosphere promotes Rust
 
-Eco favors Rust as the language for backend domains. Not because it is the easiest to write, but because it is the **cheapest to run** — and in Eco's philosophy, run cost is the cost that actually matters.
+Ecosphere favors Rust as the language for backend domains. Not because it is the easiest to write, but because it is the **cheapest to run** — and in Ecosphere's philosophy, run cost is the cost that actually matters.
 
 ## The argument in one line
 
@@ -8,7 +8,7 @@ Rust is the **smallest** supported runtime, and in the world of AI the old objec
 
 ## Smallest footprint
 
-An Eco estate runs many domains on one Proxmox CT. Each backend is a service on shared hardware, so **memory and CPU per service directly cap how many services an estate can host**. Compare the runtimes Eco provisions:
+An Ecosphere estate runs many domains on one Proxmox CT. Each backend is a service on shared hardware, so **memory and CPU per service directly cap how many services an estate can host**. Compare the runtimes Ecosphere provisions:
 
 | Runtime | Typical footprint | Startup | Binary / image size |
 | --- | --- | --- | --- |
@@ -17,7 +17,7 @@ An Eco estate runs many domains on one Proxmox CT. Each backend is a service on 
 | Node.js | moderate — interpreter + libs | tens of ms | ~100 MB+ with dependencies |
 | Java 17 | heavy — JVM, heap, class loading | seconds | ~250 MB+ JRE + app |
 
-Rust and Go are both lean, but Eco's estates already lean on Rust for the majority of domains (auth, photos, inventory, marketplace, bidding, chat, profile, rag, email-manager, contact-form) because of one more property: **predictable memory**. A single Rust binary with no garbage collector and no interpreter behaves predictably under load, which matters when a CT runs ten services at once.
+Rust and Go are both lean, but Ecosphere's estates already lean on Rust for the majority of domains (auth, photos, inventory, marketplace, bidding, chat, profile, rag, email-manager, contact-form) because of one more property: **predictable memory**. A single Rust binary with no garbage collector and no interpreter behaves predictably under load, which matters when a CT runs ten services at once.
 
 ## The learning-curve objection is obsolete
 
@@ -30,17 +30,17 @@ That was true when the only way to write Rust was to write every borrow and life
 - an AI model writes idiomatic Rust with correct ownership and error handling
 - the compiler itself is a relentless, precise reviewer — it *tells* you the fix
 - the developer's job becomes *directing and reviewing*, not remembering syntax
-- Eco's domain contracts (see [The end-to-end model](/why/end-to-end)) hand the AI the boundary: what the domain owns, its API, its runtime
+- Ecosphere's domain contracts (see [The end-to-end model](/why/end-to-end)) hand the AI the boundary: what the domain owns, its API, its runtime
 
 So the historical trade-off — *"Rust is smallest but hardest"* — collapses into *"Rust is smallest, and AI removes the difficulty"*.
 
 **Why not Rust?**
 
-## Head-to-head with the languages Eco uses
+## Head-to-head with the languages Ecosphere uses
 
 ### Rust vs Go
 
-Both compile to small native binaries. Eco's Stuff8 estate originally ran one Go domain (`notifications` — a connection-heavy WebSocket hub) alongside 8 Rust domains. It was [rewritten in Rust](/case-study/go-to-rust) to enable single-binary composition — but Go remains a first-class Eco runtime and a strong choice for standalone services.
+Both compile to small native binaries. Ecosphere's Stuff8 estate originally ran one Go domain (`notifications` — a connection-heavy WebSocket hub) alongside 8 Rust domains. It was [rewritten in Rust](/case-study/go-to-rust) to enable single-binary composition — but Go remains a first-class Ecosphere runtime and a strong choice for standalone services.
 
 | Concern | Rust | Go |
 | --- | --- | --- |
@@ -53,11 +53,11 @@ Both compile to small native binaries. Eco's Stuff8 estate originally ran one Go
 | AI productivity | excellent | excellent |
 | Suitability | systems + services | services, especially I/O-bound hubs |
 
-Eco's stance: Go remains a great choice for lean, connection-heavy services. Rust wins when you want the absolute smallest, most predictable runtime for a service that will be composed into many estates.
+Ecosphere's stance: Go remains a great choice for lean, connection-heavy services. Rust wins when you want the absolute smallest, most predictable runtime for a service that will be composed into many estates.
 
 ### Rust vs Node.js
 
-Node powers Eco's frontends. Backends in Node are a different story — and so, until recently, was the Eco CLI itself.
+Node powers Ecosphere's frontends. Backends in Node are a different story — and so, until recently, was the eco CLI itself.
 
 | Concern | Rust | Node.js |
 | --- | --- | --- |
@@ -69,13 +69,13 @@ Node powers Eco's frontends. Backends in Node are a different story — and so, 
 | Ecosystem | large | largest |
 | Best for | backends, compute, infrastructure | frontends, tooling, scripting |
 
-Eco's rule of thumb: Node for the browser, Rust for the services that run 24/7 on the CT.
+Ecosphere's rule of thumb: Node for the browser, Rust for the services that run 24/7 on the CT.
 
 The `eco` CLI itself used to be a Node package — a ~100 MB directory tree with `node_modules/`, `npm install` on every CT, a WASM-compiled SQLite, and a separate Node webhook receiver process. It has been ported to a single compiled Rust binary with every bundled script embedded inside it (see [The eco CLI: Node → Rust](/case-study/eco-cli-node-to-rust)). The control plane now runs with no Node.js dependency anywhere in the pipeline.
 
 ### Rust vs Java
 
-Eco inherited Java services from its legacy monolith — and is steadily rewriting them in Rust. The numbers from real production testing make the case undeniable.
+Ecosphere inherited Java services from its legacy monolith — and is steadily rewriting them in Rust. The numbers from real production testing make the case undeniable.
 
 **August 2026 stress test — same hardware, same CT, same load generator, two production estates:**
 
@@ -105,7 +105,7 @@ These are not synthetic benchmarks. Both estates run on the same Intel i3-1220P 
 | **Observed throughput advantage** | **+40%** | baseline |
 | **Observed memory advantage** | **20–90x smaller** | baseline |
 
-Java's cost problem is the reason Eco exists at all in one sense: the old Spring Boot auth service was a heavyweight general-purpose stack for what should be the lightest, most reusable domain in the estate. Rewriting it in Rust corrected both the cost and the domain boundary. **A legacy Java Spring Boot app — the last Java holdout, whose Java backend was a full Spring Boot 3.2 / Java 17 service — has been completely converted to Rust** (verified live on staging then shipped to production on 10 Aug 2026). An identical-workload head-to-head load test on the same hardware measured the Rust backend at 1,583 req/s vs the Java baseline's 1,335 req/s (+19%), with p95 latency dropping from 58.6 ms to 15.0 ms (−74%) and service memory from ~312 MB to ~11 MB. The estate is now entirely Rust.
+Java's cost problem is the reason Ecosphere exists at all in one sense: the old Spring Boot auth service was a heavyweight general-purpose stack for what should be the lightest, most reusable domain in the estate. Rewriting it in Rust corrected both the cost and the domain boundary. **A legacy Java Spring Boot app — the last Java holdout, whose Java backend was a full Spring Boot 3.2 / Java 17 service — has been completely converted to Rust** (verified live on staging then shipped to production on 10 Aug 2026). An identical-workload head-to-head load test on the same hardware measured the Rust backend at 1,583 req/s vs the Java baseline's 1,335 req/s (+19%), with p95 latency dropping from 58.6 ms to 15.0 ms (−74%) and service memory from ~312 MB to ~11 MB. The estate is now entirely Rust.
 
 > **The 514 MB gap.** On a mini PC running five estates simultaneously, the Java application's two Spring Boot services alone consume 584 MB. Stuff8's ten Rust services consume 70 MB. That 514 MB difference is more than the entire memory allocation of a typical small CT. Rust does not just run faster — it **makes room** for more domains, more estates, more customers, on the same hardware.
 
@@ -156,7 +156,7 @@ The goal is not to rewrite the kernel. It is to make *new* kernel code safer. Tw
 
 ### Rust vs Python
 
-Python is used in Eco estates for build-time tooling and asset scripts.
+Python is used in Ecosphere estates for build-time tooling and asset scripts.
 
 | Concern | Rust | Python |
 | --- | --- | --- |
@@ -170,19 +170,19 @@ Python's ease of writing makes it a fine choice for one-off scripts in an estate
 
 ## The honest cons of Rust
 
-Eco doesn't pretend Rust is perfect:
+Ecosphere doesn't pretend Rust is perfect:
 
 - **Compile times** are longer than Go's, and longer than any interpreted language. Incremental builds help; large estates build once per CT and reuse binaries.
 - **Steeper abstractions** — async, traits, lifetimes. Without AI assistance the ramp is real.
 - **Verbose for some tasks** — serialization and boilerplate take more lines than Go or Python.
 - **Talent pool** — fewer Rust developers than JS/Python/Java, though AI narrows this.
 
-Each of these is a one-time or tooling cost, not a per-service running cost. Eco optimizes for the cost you pay **forever** — the footprint on the CT — rather than the cost you pay **once** — learning the language.
+Each of these is a one-time or tooling cost, not a per-service running cost. Ecosphere optimizes for the cost you pay **forever** — the footprint on the CT — rather than the cost you pay **once** — learning the language.
 
 ## The verdict
 
 > Rust is smallest. AI removed the learning curve. So why not Rust?
 
-For always-on estate backends, Eco's answer is Rust by default, with Go where a connection-heavy service is a better fit, Node for everything browser-side, and Python for tooling. The language is a domain decision — but Eco nudges toward the smallest runtime that does the job.
+For always-on estate backends, Ecosphere's answer is Rust by default, with Go where a connection-heavy service is a better fit, Node for everything browser-side, and Python for tooling. The language is a domain decision — but Ecosphere nudges toward the smallest runtime that does the job.
 
 See also: [Supported languages](/guide/languages), [The end-to-end model](/why/end-to-end), [Architecture](/reference/architecture).

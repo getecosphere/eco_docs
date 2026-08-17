@@ -6,3 +6,4 @@ dist/
 .eco-astro-preview.sh
 .eco-spring-boot-start.sh
 .DS_Store
+frontend/.vitepress/cache/

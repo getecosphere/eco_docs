@@ -5,7 +5,7 @@
 
 ## The repos
 
-Eco is split into two repos under `github.com/ecosphere-creator`:
+Ecosphere is split into two repos under `github.com/ecosphere-creator`:
 
 - **`eco`** (public) — the inspectable CLI: `eco up --remote`, `lxs`, `ports`,
   `show`, `startproject`, `compose`, systemd units, host-builder, Bun. No

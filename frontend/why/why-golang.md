@@ -1,6 +1,6 @@
-# Why Eco considered Go (and chose Rust)
+# Why Ecosphere considered Go (and chose Rust)
 
-**Go and Rust are the two languages that come closest to Eco's ideal: compile to a native binary, start in milliseconds, run lean on shared hardware. Eco deployed one Go service in production for over a year before rewriting it in Rust. Here is why Go was a genuine contender — and why Rust won.**
+**Go and Rust are the two languages that come closest to Ecosphere's ideal: compile to a native binary, start in milliseconds, run lean on shared hardware. Ecosphere deployed one Go service in production for over a year before rewriting it in Rust. Here is why Go was a genuine contender — and why Rust won.**
 
 ---
 
@@ -10,7 +10,7 @@ Go was designed at Google in 2007 by three legends — Rob Pike (Unix, UTF-8), K
 
 Go is intentionally **boring**. The spec is small enough to read in an afternoon. There are no classes, no inheritance, no exceptions, no annotations. The philosophy: a team of average programmers can read and maintain Go code written by another team five years ago — which is exactly what happens inside Google.
 
-### The numbers that mattered to Eco
+### The numbers that mattered to Ecosphere
 
 | Metric | Go | Notes |
 |---|---|---|
@@ -43,9 +43,9 @@ Go powers some of the most heavily-trafficked infrastructure on the internet:
 
 ---
 
-## The Go vs Rust comparison on Eco's terms
+## The Go vs Rust comparison on Ecosphere's terms
 
-Eco cares about one question: what is the cheapest way to run a domain on shared hardware? Both Go and Rust are in the top tier. Here is the nitty-gritty:
+Ecosphere cares about one question: what is the cheapest way to run a domain on shared hardware? Both Go and Rust are in the top tier. Here is the nitty-gritty:
 
 | Concern | Go | Rust | Edge |
 |---|---|---|---|
@@ -63,7 +63,7 @@ Eco cares about one question: what is the cheapest way to run a domain on shared
 | **Correctness guarantees** | `nil` pointers, data races possible | Compile-time guarantees, no data races | Rust |
 | **Composability** | Each binary is separate — no crate linking | Cargo workspace links arbitrary crates into one binary | **Rust (decisive for single-binary)** |
 
-Go and Rust are both excellent. For a standalone WebSocket service, Go's goroutine-per-connection model is easier to write correctly than Rust's async/await WebSocket actor. For an estate of 9 Rust domains that Eco wants to optionally collapse into one binary, **Rust wins by default**: Cargo can link any number of Rust crates into one binary; Go cannot participate in a Rust workspace.
+Go and Rust are both excellent. For a standalone WebSocket service, Go's goroutine-per-connection model is easier to write correctly than Rust's async/await WebSocket actor. For an estate of 9 Rust domains that Ecosphere wants to optionally collapse into one binary, **Rust wins by default**: Cargo can link any number of Rust crates into one binary; Go cannot participate in a Rust workspace.
 
 ---
 
@@ -71,28 +71,28 @@ Go and Rust are both excellent. For a standalone WebSocket service, Go's gorouti
 
 The old objection to Go — "GC pauses kill tail latency" — was true in Go 1.4 and earlier. Since Go 1.5 (2015), the GC has been concurrent and pause times are typically under 100 *microseconds*. For an HTTP request that takes 10–50 milliseconds inside the handler, a 100µs pause is invisible.
 
-Discord's famous blog post about switching from Go to Rust described GC pauses of **multiple seconds** under load. That was Go 1.9 in 2019. The GC has improved substantially since then, and Discord's workload (caching millions of in-memory objects) is a GC stress-test few services ever hit. Eco's domains — stateless HTTP handlers backed by MongoDB — see almost no GC pressure. The GC argument against Go today is about *predictability*, not latency. Rust gives you exact, compile-time memory behavior; Go gives you "good enough" 99.999% of the time.
+Discord's famous blog post about switching from Go to Rust described GC pauses of **multiple seconds** under load. That was Go 1.9 in 2019. The GC has improved substantially since then, and Discord's workload (caching millions of in-memory objects) is a GC stress-test few services ever hit. Ecosphere's domains — stateless HTTP handlers backed by MongoDB — see almost no GC pressure. The GC argument against Go today is about *predictability*, not latency. Rust gives you exact, compile-time memory behavior; Go gives you "good enough" 99.999% of the time.
 
 ---
 
-## What Eco still uses Go for
+## What Ecosphere still uses Go for
 
-After the notifications rewrite, the Stuff8 estate has **zero Go**. But Eco as a framework still treats Go as a first-class runtime:
+After the notifications rewrite, the Stuff8 estate has **zero Go**. But Ecosphere as a framework still treats Go as a first-class runtime:
 
 - `ecompose.yml` supports `runtimes: [golang, mongodb@7]`
-- Eco provisions GCC (the Go toolchain) on CTs just like it provisions Rust
+- eco provisions GCC (the Go toolchain) on CTs just like it provisions Rust
 - `eco up` knows how to build a Go module and deploy the binary
 
 The Go → Rust conversion was not a rejection of Go. It was a **unification**: when 8 of 9 domains are Rust, the operational cost of maintaining one more toolchain, one more build step, one more set of dependencies, and one more process outweighed the benefits of Go's simpler concurrency model.
 
-For a standalone service — especially a connection-heavy real-time service where goroutines shine — Go is still an excellent choice in any Eco estate.
+For a standalone service — especially a connection-heavy real-time service where goroutines shine — Go is still an excellent choice in any Ecosphere estate.
 
 ---
 
 ## The verdict
 
-> Go is the closest language to Rust in Eco's runtime ideal — small static binary, fast startup, lean memory. For a standalone service, the two are nearly equal. In an estate that already runs Rust and wants single-binary composition, Rust's Cargo workspace capability is the tiebreaker.
+> Go is the closest language to Rust in Ecosphere's runtime ideal — small static binary, fast startup, lean memory. For a standalone service, the two are nearly equal. In an estate that already runs Rust and wants single-binary composition, Rust's Cargo workspace capability is the tiebreaker.
 
-Rust is not "better" than Go. It is more *composable* for Eco's specific use case: many small domains that may or may not share a process.
+Rust is not "better" than Go. It is more *composable* for Ecosphere's specific use case: many small domains that may or may not share a process.
 
 See: [Why Rust](/why/why-rust), [The Go → Rust conversion](/case-study/go-to-rust), [Keeping Multi-Binary](/case-study/keeping-multi-binary).

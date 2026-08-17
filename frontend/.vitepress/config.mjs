@@ -1,29 +1,29 @@
 import { defineConfig } from 'vitepress';
 import { withMermaid } from 'vitepress-plugin-mermaid';
 
-const siteUrl = 'https://doc.getecosphere.com';
-const siteTitle = 'Eco — Compose reusable domains into self-sustaining estates';
+const siteUrl = 'https://docs.getecosphere.com';
+const siteTitle = 'Ecosphere — Compose reusable domains into self-sustaining estates';
 const siteDescription =
-  'Eco is a host-native DDD platform for Proxmox. Compose reusable domains into self-sustaining application estates with a Docker-like developer experience — no Docker required. Built for the world of AI: end-to-end, from a single developer to large teams.';
+  'Ecosphere is a host-native DDD platform for Proxmox. Compose reusable domains into self-sustaining application estates with a Docker-like developer experience — no Docker required. Built for the world of AI: end-to-end, from a single developer to large teams.';
 
 const jsonLd = JSON.stringify({
   '@context': 'https://schema.org',
   '@type': 'SoftwareApplication',
-  name: 'Eco',
+  name: 'Ecosphere',
   applicationCategory: 'DeveloperApplication',
   operatingSystem: 'Proxmox VE, Linux, macOS',
   description: siteDescription,
   url: siteUrl,
   publisher: {
     '@type': 'Organization',
-    name: 'Eco'
+    name: 'Ecosphere'
   },
   offers: { '@type': 'Offer', price: '0' }
 });
 
 export default withMermaid(
   {
-    title: 'Eco',
+    title: 'Ecosphere',
     description: siteDescription,
     lang: 'en-US',
     cleanUrls: true,
@@ -31,10 +31,10 @@ export default withMermaid(
     outDir: 'dist',
     head: [
       ['meta', { name: 'theme-color', content: '#43aa82' }],
-      ['meta', { name: 'author', content: 'Eco' }],
+      ['meta', { name: 'author', content: 'Ecosphere' }],
       ['meta', { name: 'robots', content: 'index, follow' }],
       ['meta', { property: 'og:type', content: 'website' }],
-      ['meta', { property: 'og:site_name', content: 'Eco' }],
+      ['meta', { property: 'og:site_name', content: 'Ecosphere' }],
       ['meta', { property: 'og:title', content: siteTitle }],
       ['meta', { property: 'og:description', content: siteDescription }],
       ['meta', { property: 'og:url', content: siteUrl }],
@@ -60,7 +60,7 @@ export default withMermaid(
         { text: 'Ecosphere', link: '/ecosphere/' },
         { text: 'Guide', link: '/guide/getting-started' },
         { text: 'Show it publicly', link: '/guide/serve' },
-        { text: 'Why Eco', link: '/why/eco-vs-docker' },
+        { text: 'Why Ecosphere', link: '/why/eco-vs-docker' },
         { text: 'Concepts', link: '/concepts/domains' },
         { text: 'Reference', link: '/reference/ecompose' },
         { text: 'Case Study', link: '/case-study/java-to-rust-migration' },
@@ -98,14 +98,14 @@ export default withMermaid(
         ],
         '/why/': [
           {
-            text: 'Why Eco',
+            text: 'Why Ecosphere',
             items: [
-              { text: 'Eco vs Docker', link: '/why/eco-vs-docker' },
-              { text: 'Why Eco promotes Rust', link: '/why/why-rust' },
+              { text: 'Ecosphere vs Docker', link: '/why/eco-vs-docker' },
+              { text: 'Why Ecosphere promotes Rust', link: '/why/why-rust' },
               { text: 'Why Golang?', link: '/why/why-golang' },
               { text: 'The end-to-end model', link: '/why/end-to-end' },
-              { text: 'The story behind Eco', link: '/why/story' },
-              { text: 'Why the name "Eco"', link: '/why/the-name' }
+              { text: 'The story behind Ecosphere', link: '/why/story' },
+              { text: 'Why the name "Ecosphere"', link: '/why/the-name' }
             ]
           }
         ],
@@ -167,7 +167,7 @@ export default withMermaid(
       },
       footer: {
         message: 'Released under the MIT License.',
-        copyright: 'Copyright © 2026 Eco'
+        copyright: 'Copyright © 2026 Ecosphere'
       }
     }
   },

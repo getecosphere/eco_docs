@@ -1,8 +1,8 @@
-# Stress Testing Eco Estates at Scale
+# Stress Testing Ecosphere Estates at Scale
 
 **5,000 concurrent users on a $300 mini PC. Zero failures. Graceful degradation.**
 
-This is not a theoretical claim — it is the result of an exhaustive penetration testing campaign conducted in August 2026 against two production Eco estates running on an Intel i3-1220P mini PC with 7.3 GiB of RAM, sitting in an office behind a consumer ISP connection.
+This is not a theoretical claim — it is the result of an exhaustive penetration testing campaign conducted in August 2026 against two production Ecosphere estates running on an Intel i3-1220P mini PC with 7.3 GiB of RAM, sitting in an office behind a consumer ISP connection.
 
 > **Update (10 Aug 2026):** the "Legacy Java application" referenced throughout this document is a **legacy Java Spring Boot app**, and its Java backend has since been **fully converted to Rust** (axum + sqlx) and verified in production. The conversion used the staging workflow: the Rust rewrite was deployed to staging (CT 1000), ran byte-for-byte identical against the Java baseline on every endpoint (14/18 responses identical, the remaining 3 differing only in unsorted-list row order), then replaced prod. A head-to-head load test of the identical API workload on the same hardware measured:
 >
@@ -32,13 +32,13 @@ This is not a theoretical claim — it is the result of an exhaustive penetratio
 
 This is not server hardware. It is a desktop-class machine that fits in a backpack. The kind of hardware a two-person startup buys because it is what they can afford.
 
-The four CTs on this host run **five production estates** (Stuff8, a legacy Java application, a customer estate, Eco Docs, Ecosphere), sharing CPU, memory, and disk I/O. Every estate competes for the same resources — there is no dedicated hardware for any single application.
+The four CTs on this host run **five production estates** (Stuff8, a legacy Java application, a customer estate, Ecosphere Docs, Ecosphere), sharing CPU, memory, and disk I/O. Every estate competes for the same resources — there is no dedicated hardware for any single application.
 
 ---
 
 ## What We Tested
 
-Two estates were selected as representatives of Eco's two primary backend stacks:
+Two estates were selected as representatives of Ecosphere's two primary backend stacks:
 
 | Estate | Frontend | Primary Backend | Stack | Domains |
 |---|---|---|---|---|
@@ -119,7 +119,7 @@ These are not synthetic benchmarks. They are real production estates, running re
 
 On a mini PC with 7.3 GiB of RAM running five estates, every megabyte counts. The Java application's two Spring Boot services consume ~584 MB together. The ten Rust services in Stuff8 consume ~70 MB total. That is 514 MB — over half a gigabyte — that the Rust estate leaves for other workloads, for the OS page cache, for MongoDB and PostgreSQL, and for the next estate you compose.
 
-In a Docker/Kubernetes world, you throw more nodes at the problem. In Eco's world, where one CT is the machine boundary, **memory per service is the hard limit on how many domains you can compose**. Rust raises that limit by an order of magnitude.
+In a Docker/Kubernetes world, you throw more nodes at the problem. In Ecosphere's world, where one CT is the machine boundary, **memory per service is the hard limit on how many domains you can compose**. Rust raises that limit by an order of magnitude.
 
 ---
 
@@ -143,7 +143,7 @@ The Cloudflare tunnel process on the proxy CT was a single `cloudflared` Go bina
 
 **After (4 replicas):** 184ms avg at 200 VUs — a 30x improvement. The Cloudflare path now saturates at ~100 req/s, which is the office ISP's upload bandwidth limit (~10-20 Mbps), not the application or the tunnel software.
 
-To achieve this, Eco now supports `expose.tunnel_replicas` in `ecompose.yml` (default: 3):
+To achieve this, eco now supports `expose.tunnel_replicas` in `ecompose.yml` (default: 3):
 
 ```yaml
 expose:
@@ -156,7 +156,7 @@ expose:
 
 CT 101 started with **2 cores and 4 GiB RAM** — the template defaults. After analysis, it was resized to **10 cores and 6 GiB RAM** to match the host's capacity (12 logical CPUs, 7.3 GiB total). The proxy CT (100) was bumped from 2 cores / 1 GiB to 4 cores / 2 GiB.
 
-These operations are now first-class Eco commands:
+These operations are now first-class eco commands:
 
 ```bash
 eco prox set-ct 101 --cores 10 --memory 6144 --swap 2048
@@ -174,21 +174,21 @@ From 5,622ms at 1,000 VUs to 288ms at 1,000 VUs and 1,601ms at 5,000 VUs — a *
 
 You do not need a data center. You do not need Kubernetes. You do not need to spend $500/month on cloud infrastructure before you have a single user.
 
-An off-the-shelf $300 mini PC running Proxmox and Eco can serve **4,000+ concurrent real users** (at normal browsing patterns of 5 requests per visit with 5-second think time) through the internal gateway. Through Cloudflare with a consumer ISP, the practical limit is ~200 concurrent real users — sufficient for the vast majority of early-stage products and internal business applications.
+An off-the-shelf $300 mini PC running Proxmox and Ecosphere can serve **4,000+ concurrent real users** (at normal browsing patterns of 5 requests per visit with 5-second think time) through the internal gateway. Through Cloudflare with a consumer ISP, the practical limit is ~200 concurrent real users — sufficient for the vast majority of early-stage products and internal business applications.
 
-When you outgrow the mini PC, you add a second one. Or a VPS. Or move to a colocated server. Eco's scaling model (see [Scaling](/concepts/scaling)) makes each transition a matter of adding infrastructure, not rewriting the application.
+When you outgrow the mini PC, you add a second one. Or a VPS. Or move to a colocated server. Ecosphere's scaling model (see [Scaling](/concepts/scaling)) makes each transition a matter of adding infrastructure, not rewriting the application.
 
 ### For the enterprise
 
 The 5,000-VU test was on hardware shared with four other estates. A dedicated CT with exclusive CPU and memory would push these numbers significantly higher. The linear degradation curve means you can predict capacity: double the hardware, roughly double the throughput. Rust services consume so little per instance that horizontal scaling (multiple replicas behind a load balancer) is trivially cheap.
 
-Eco does not replace Kubernetes at enterprise scale — it precedes it. When you genuinely need per-service elastic scaling across a cluster, you graduate to Kubernetes with Eco as your **development-to-production pipeline** that gets you from zero to your first 10,000 users on hardware you already own.
+Ecosphere does not replace Kubernetes at enterprise scale — it precedes it. When you genuinely need per-service elastic scaling across a cluster, you graduate to Kubernetes with Ecosphere as your **development-to-production pipeline** that gets you from zero to your first 10,000 users on hardware you already own.
 
 ### For the developer choosing a stack
 
 The 20–40% throughput advantage and 20–90x memory advantage of Rust over Java, measured on identical hardware under identical load, is not debatable. The learning-curve objection to Rust — "it's too hard" — dissolved the moment AI-assisted development became practical. An AI model writes correct Rust; the compiler is the reviewer; the developer directs and inspects.
 
-In Eco's philosophy (see [Why Eco promotes Rust](/why/why-rust)), the cost you pay **forever** — the runtime footprint — dominates every other consideration. Rust is objectively the cheapest runtime Eco supports. The data from these tests confirms the philosophy.
+In Ecosphere's philosophy (see [Why Ecosphere promotes Rust](/why/why-rust)), the cost you pay **forever** — the runtime footprint — dominates every other consideration. Rust is objectively the cheapest runtime Ecosphere supports. The data from these tests confirms the philosophy.
 
 ---
 
@@ -218,7 +218,7 @@ All tests run on 2026-08-07, Proxmox host, k6 v0.54.0, internal gateway `http://
 
 ---
 
-## Testing Eco Itself
+## Testing Ecosphere Itself
 
 `eco stress` is a built-in CLI command that makes this kind of testing repeatable:
 
@@ -239,4 +239,4 @@ It auto-provisions k6 on Linux x64, macOS Intel, and macOS Apple Silicon. No con
 
 ## TL;DR
 
-A $300 mini PC running Eco handles 5,000 concurrent connections with zero failures and 1,601ms average (Rust estate). The Rust estate is 20–40% faster and 20–90x more memory-efficient than an equivalent Java estate on the same hardware. You do not need a data center to serve your first 10,000 users. You need Eco, Proxmox, and Rust.
+A $300 mini PC running Ecosphere handles 5,000 concurrent connections with zero failures and 1,601ms average (Rust estate). The Rust estate is 20–40% faster and 20–90x more memory-efficient than an equivalent Java estate on the same hardware. You do not need a data center to serve your first 10,000 users. You need Ecosphere, Proxmox, and Rust.

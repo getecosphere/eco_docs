@@ -1,6 +1,6 @@
 # Deploy — explicit, from the machine that builds
 
-Eco's deploys are **explicit and dev- or CI-initiated**. There is no CI/CD
+Ecosphere's deploys are **explicit and dev- or CI-initiated**. There is no CI/CD
 pipeline to configure and no webhook to wire up: `eco up --remote` *is* the
 deploy. The build farm lives on each developer machine, and the same command
 that builds also ships.
@@ -85,7 +85,7 @@ jobs:
 
 ## Why the estate is the deploy unit
 
-Eco's deploys are **estate-scoped**: one `eco up --remote` ships the whole
+Ecosphere's deploys are **estate-scoped**: one `eco up --remote` ships the whole
 estate consistently. This matches the domain model — the estate is the
 deployment unit, so the pipeline runs at estate granularity, not per-repo.
 

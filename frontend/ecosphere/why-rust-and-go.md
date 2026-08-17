@@ -38,7 +38,7 @@ pricing model, and the "no build farm on the server" architecture.
 
 ## The deeper argument for Rust
 
-Eco favors Rust for the majority of domains because of **predictable memory**.
+Ecosphere favors Rust for the majority of domains because of **predictable memory**.
 A single Rust binary with no garbage collector and no interpreter behaves
 predictably under load — essential when one CT hosts ten services at once. The
 stress test made the point concretely: Rust ran **20–40% faster** than Java on
@@ -51,19 +51,19 @@ reviewer. The developer's job is directing and reviewing, not memorizing the
 borrow checker. The cost side of Rust collapsed; the run cost was always near
 zero.
 
-Read the full treatment: [Why Eco promotes Rust](/why/why-rust).
+Read the full treatment: [Why Ecosphere promotes Rust](/why/why-rust).
 
 ---
 
 ## Why Go is a genuine partner
 
 Go brings the same binary independence with a gentler learning curve and
-batteries-included concurrency (`goroutines`). It was Eco's production language
+batteries-included concurrency (`goroutines`). It was Ecosphere's production language
 for over a year before the estates moved to all-Rust — and it remains a
 first-class LXS language. For a WebSocket hub (notifications, chat), Go's
 goroutine-per-connection model is a perfect fit.
 
-Read the full treatment: [Why Eco considered Go (and chose Rust)](/why/why-golang).
+Read the full treatment: [Why Ecosphere considered Go (and chose Rust)](/why/why-golang).
 
 ---
 
@@ -80,4 +80,4 @@ photos, notifications, email, payments, shipping — each is an LXS you compose,
 not a service you build. And because they are binaries, each one can be bought,
 sold, and reused across every estate in the platform.
 
-See also: [Introducing LXS](/ecosphere/), [Eco vs Docker](/why/eco-vs-docker), [The end-to-end model](/why/end-to-end).
+See also: [Introducing LXS](/ecosphere/), [Ecosphere vs Docker](/why/eco-vs-docker), [The end-to-end model](/why/end-to-end).

@@ -1,6 +1,6 @@
 # Domains
 
-The core unit of the Eco model is the **domain** — a bounded context that is also a reusable operational unit.
+The core unit of the Ecosphere model is the **domain** — a bounded context that is also a reusable operational unit.
 
 ## What makes a domain reusable
 
@@ -32,7 +32,7 @@ explicitly so they are visible at composition time — each domain's contract
 
 ## Dependencies are explicit
 
-When a frontend composes a sibling domain, it declares the peer URL in `.env.example` (empty value), and Eco fills it against the discovered service:
+When a frontend composes a sibling domain, it declares the peer URL in `.env.example` (empty value), and eco fills it against the discovered service:
 
 ```
 PUBLIC_PROFILE_URL=

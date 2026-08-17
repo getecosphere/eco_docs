@@ -106,7 +106,7 @@ Three units instead of twelve. One binary to build instead of nine. No Go toolch
 
 ### For the architecture
 
-`target_mode: single-binary` in `ecompose.yml` lets Eco automatically collapse all Rust domains into one binary. Remove the field and you're back to multi-binary. The same domain code works in both modes — each domain's `bootstrap()` function is the contract. Eco generates the shim, the workspace, the Caddy gateway config, and the service config automatically.
+`target_mode: single-binary` in `ecompose.yml` lets eco automatically collapse all Rust domains into one binary. Remove the field and you're back to multi-binary. The same domain code works in both modes — each domain's `bootstrap()` function is the contract. eco generates the shim, the workspace, the Caddy gateway config, and the service config automatically.
 
 ---
 

@@ -2,7 +2,7 @@
 
 When one CT hosts several estates, every service, gateway, and database needs
 an identity that never changes — otherwise a redeploy or a second estate can
-silently grab a port another estate is already using. Eco keeps that
+silently grab a port another estate is already using. eco keeps that
 authoritative record in a **per-machine resource registry**: a small local
 SQLite database that owns the allocation of every managed port and database
 credential.

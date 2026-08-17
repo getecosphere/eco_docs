@@ -1,8 +1,8 @@
 # Case Study: Stuff8
 
-Stuff8 is a production estate built with Eco — a **personal inventory system** whose inventory can optionally become a public marketplace. It demonstrates the full composition model: ten independent domains composed into one application, deployed on a shared CT, exposed through a single hostname.
+Stuff8 is a production estate built with Ecosphere — a **personal inventory system** whose inventory can optionally become a public marketplace. It demonstrates the full composition model: ten independent domains composed into one application, deployed on a shared CT, exposed through a single hostname.
 
-> **Study the model, not the business.** This page uses Stuff8 to show how Eco composes real, independent domains into a working estate.
+> **Study the model, not the business.** This page uses Stuff8 to show how Ecosphere composes real, independent domains into a working estate.
 
 ## The composition
 
@@ -25,7 +25,7 @@ Ten independent repositories, each with its own contract, persistence, and runti
 
 ## One estate, ten languages stacks, one host
 
-The mix of runtimes shows Eco's language-agnosticism in practice:
+The mix of runtimes shows Ecosphere's language-agnosticism in practice:
 
 - **10 Rust services** (auth, photos, inventory, marketplace, bidding, chat, profile, notifications, rag + the frontend build toolchain)
 - **1 Node.js/Astro frontend** (stuff8_core)
@@ -120,7 +120,7 @@ Ten Rust services and one Astro frontend, zero failures at 5,000 concurrent user
 
 ## Two footprints: prod and staging
 
-Stuff8 also demonstrates Eco's **prod/staging workflow**. The estate declares a
+Stuff8 also demonstrates Ecosphere's **prod/staging workflow**. The estate declares a
 staging footprint in `ecompose.yml`, so it runs two deployments from the same
 manifest:
 

@@ -1,14 +1,14 @@
 # Supported Languages
 
-Eco is language-agnostic at the domain level — a domain owns its runtime and declares it in `ecompose.yml`. Eco provisions the runtime and manages the service lifecycle, no matter the language.
+Ecosphere is language-agnostic at the domain level — a domain owns its runtime and declares it in `ecompose.yml`. eco provisions the runtime and manages the service lifecycle, no matter the language.
 
-Below are the runtimes Eco provisions today, with the languages most commonly used across Eco estates.
+Below are the runtimes eco provisions today, with the languages most commonly used across Ecosphere estates.
 
 ## Rust — the primary backend language
 
 <img src="/langs/rust.svg" width="48" height="48" alt="Rust logo" style="float:left;margin:0 16px 16px 0" />
 
-Rust (with the **axum** web framework) is the workhorse of Eco estates. It powers `auth`, `photos`, `inventory`, `marketplace`, `bidding`, `chat`, `profile`, and the RAG domain. Services are cross-compiled on the developer machine into native binaries, shipped to the CT, and run under systemd — cheap to operate, a deliberate response to the heavyweight JVM services that preceded them.
+Rust (with the **axum** web framework) is the workhorse of Ecosphere estates. It powers `auth`, `photos`, `inventory`, `marketplace`, `bidding`, `chat`, `profile`, and the RAG domain. Services are cross-compiled on the developer machine into native binaries, shipped to the CT, and run under systemd — cheap to operate, a deliberate response to the heavyweight JVM services that preceded them.
 
 Rust domains typically pair with **MongoDB**, **Redis**, and **MinIO/S3** runtimes.
 
@@ -22,13 +22,13 @@ Go powers the **notifications** domain — a persistent, realtime in-app notific
 
 <img src="/langs/nodejs.svg" width="48" height="48" alt="Node.js logo" style="float:left;margin:0 16px 16px 0" />
 
-Node.js is the runtime for frontends and composition apps. (Eco's own CLI is a compiled Rust binary, not Node.) Frontends are built on the developer machine and shipped as `dist`; Node backends can be Bun-compiled into single linux-x64 binaries so the CT needs no Node at all.
+Node.js is the runtime for frontends and composition apps. (Ecosphere's own CLI is a compiled Rust binary, not Node.) Frontends are built on the developer machine and shipped as `dist`; Node backends can be Bun-compiled into single linux-x64 binaries so the CT needs no Node at all.
 
 ## TypeScript — frontend composition
 
 <img src="/langs/typescript.svg" width="48" height="48" alt="TypeScript logo" style="float:left;margin:0 16px 16px 0" />
 
-TypeScript is used across the Eco frontend ecosystem — in **Nuxt.js** composition apps, **Astro.js** composition apps, **Next.js** platform apps, and the **VitePress** docs site you're reading now.
+TypeScript is used across the Ecosphere frontend ecosystem — in **Nuxt.js** composition apps, **Astro.js** composition apps, **Next.js** platform apps, and the **VitePress** docs site you're reading now.
 
 ## JavaScript frameworks commonly composed
 
@@ -38,7 +38,7 @@ TypeScript is used across the Eco frontend ecosystem — in **Nuxt.js** composit
 <img src="/langs/tailwindcss.svg" width="48" height="48" alt="Tailwind CSS logo" style="float:left;margin:0 16px 16px 0" />
 
 - **Nuxt.js + Vue** — supported composition frontend framework; run as a dev server (`npm run dev`) locally during development and built for production with `nuxt build`. Used by the Ecosphere platform.
-- **Astro.js + Tailwind CSS** — the primary frontend stack for Eco composition apps (e.g. Stuff8)
+- **Astro.js + Tailwind CSS** — the primary frontend stack for Ecosphere composition apps (e.g. Stuff8)
 - **Next.js + React** — used for platform and legacy LMS frontends
 - **Tailwind CSS** — the shared styling foundation
 
@@ -46,7 +46,7 @@ TypeScript is used across the Eco frontend ecosystem — in **Nuxt.js** composit
 
 <img src="/langs/python.svg" width="48" height="48" alt="Python logo" style="float:left;margin:0 16px 16px 0" />
 
-Python is used for build-time and content tooling in Eco estates — asset generation, image processing scripts, and other supporting utilities.
+Python is used for build-time and content tooling in Ecosphere estates — asset generation, image processing scripts, and other supporting utilities.
 
 ## Java — legacy, on the way out
 
@@ -73,6 +73,6 @@ Java (17) + Maven is a supported runtime for legacy services. The original `auth
 
 ## Languages are a domain decision
 
-A domain's `README.md` fixes its contract, including its runtime. Eco doesn't force a language on you — it provisions whatever the service declares and keeps the operational surface identical (ports, `.env`, systemd, gateway routing) regardless.
+A domain's `README.md` fixes its contract, including its runtime. Ecosphere doesn't force a language on you — it provisions whatever the service declares and keeps the operational surface identical (ports, `.env`, systemd, gateway routing) regardless.
 
 See also: [ecompose.yml reference](/reference/ecompose), [Architecture](/reference/architecture).

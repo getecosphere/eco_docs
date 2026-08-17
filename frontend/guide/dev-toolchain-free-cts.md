@@ -3,7 +3,7 @@
 > Build once on the machine that owns the work. Ship the artifact. The CT never
 > compiles anything.
 
-Eco's production CTs are **toolchain-free**: they only *run* artifacts — Rust
+Ecosphere's production CTs are **toolchain-free**: they only *run* artifacts — Rust
 binaries and built frontends. All compilation happens on the developer's
 machine (or a tiny Linux VM on it), and `eco up --remote` ships the artifacts
 over the `eco serve` agent. There is no Node.js, no npm, no cargo, no PM2 on a
@@ -45,7 +45,7 @@ Builds happen on the machine that owns the work; the CT is a pure runtime.
 ## The builder: an old Mac tells the story
 
 The reference builder is a **2014 Intel MacBook Pro** (i7-4770HQ, 8 threads,
-16 GB RAM) running **macOS 12 Monterey** — the same machine Eco's story is
+16 GB RAM) running **macOS 12 Monterey** — the same machine Ecosphere's story is
 built around. It runs a single Multipass **Ubuntu 22.04 VM** (`eco-builder`,
 4 vCPU / 6 GB RAM / sparse 40 GB disk).
 
@@ -236,7 +236,7 @@ Linux VM and shipped through the agent — no in-CT frontend build.
   `eco ports reset --project <name>` on that CT before redeploying a
   materially different service set.
 
-This is the direction Eco was always headed: **Docker gives you images and
-removes the toolchain from the host. Eco gives you artifacts and removes the
+This is the direction Ecosphere was always headed: **Docker gives you images and
+removes the toolchain from the host. Ecosphere gives you artifacts and removes the
 toolchain from the CT.** The developer's old Mac, of all machines, is what made
 that real.

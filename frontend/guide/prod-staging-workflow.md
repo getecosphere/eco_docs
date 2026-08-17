@@ -1,10 +1,10 @@
 # Prod & Staging Workflow
 
-Every Eco estate can have **two footprints**: a **production** site your users
+Every Ecosphere estate can have **two footprints**: a **production** site your users
 actually visit, and a **staging** site where new work lands before it ever
 touches production.
 
-This is the daily working rhythm for a team building on Eco. It exists to make
+This is the daily working rhythm for a team building on Ecosphere. It exists to make
 one thing hard: accidentally deploying to production. Production deploys
 should be deliberate, reviewed, and guarded — never the default outcome of
 pushing code.
@@ -15,7 +15,7 @@ Without staging, every deploy goes straight to production. For a solo builder
 that feels fast; for a team it is dangerous — one bad push and the live site
 is down with no preview to catch it first.
 
-Eco's answer is a **two-footprint model** with explicit deploys:
+Ecosphere's answer is a **two-footprint model** with explicit deploys:
 
 - `eco up --remote --staging` → deploys to **staging**
 - `eco up --remote` → deploys to **production**
@@ -112,7 +112,7 @@ workflow.
 ## Sync prod data to staging
 
 Staging is a real environment, and a real environment wants real data.
-Eco can copy every database — **MongoDB and PostgreSQL** — from production to
+eco can copy every database — **MongoDB and PostgreSQL** — from production to
 staging in one command:
 
 ```bash

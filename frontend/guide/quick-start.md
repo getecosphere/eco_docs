@@ -9,7 +9,7 @@ This page walks through the actual command flow for a complete estate lifecycle.
 eco up dev
 ```
 
-This behaves like `docker compose up` on your machine. Eco:
+This behaves like `docker compose up` on your machine. eco:
 
 1. Reads `ecompose.yml` from the current directory
 2. Provisions the declared runtimes locally

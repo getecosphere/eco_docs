@@ -1,6 +1,6 @@
 # CLI Commands
 
-Eco is a **single compiled Rust binary** — no Node.js, no interpreter, no
+eco is a **single compiled Rust binary** — no Node.js, no interpreter, no
 `node_modules`. It is installed once per machine (developer machine, host, CT)
 and runs everywhere with the same behavior.
 

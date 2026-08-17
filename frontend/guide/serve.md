@@ -21,7 +21,7 @@ eco serve mentoring        # ...and now the world can see it
 ```
 
 That's it. No domain to buy. No DNS to configure. No server to rent. No TLS to
-figure out. Your laptop *is* the server, and Eco handles everything between it
+figure out. Your laptop *is* the server, and eco handles everything between it
 and the internet.
 
 ---
@@ -65,7 +65,7 @@ This is the part that matters for real-world builders:
   with zero infrastructure cost. The only thing you're paying is your own
   electricity.
 - **When you're ready to grow.** Once the project earns money, you move to a
-  managed Eco estate: a real server, your own domain, scaling, and backups —
+  managed Ecosphere estate: a real server, your own domain, scaling, and backups —
   now funded by the revenue the app is actually generating.
 
 No upfront bet. The cost of trying your idea out is exactly zero, and the cost
@@ -84,13 +84,13 @@ Her problem: parents want *proof* it's real. They want to see the schedule,
 talk to her, join a session — not just hear about it. But she's not a
 developer, and she doesn't have a website, a domain, or a server.
 
-Here's how Eco + `eco serve` changes her week:
+Here's how Ecosphere + `eco serve` changes her week:
 
 **Step 1 — she gets her mentoring app.**
 
-A developer friend (or an AI assistant, or Eco's `startproject`) scaffolds her
+A developer friend (or an AI assistant, or eco's `startproject`) scaffolds her
 a small mentoring app: a schedule, a signup form, a private chat for students
-and parents, and a place to post notes. It's a normal Eco estate composed from
+and parents, and a place to post notes. It's a normal Ecosphere estate composed from
 reusable domains — auth, chat, notifications.
 
 **Step 2 — she runs it locally.**
@@ -141,12 +141,12 @@ Under the hood, `eco serve` is deliberately boring and reliable:
 
 1. **You pick a subdomain.** `eco serve <name>` — lowercase letters, digits,
    hyphens. You choose it.
-2. **Eco checks for conflicts.** A host-side registry (plus authoritative
+2. **eco checks for conflicts.** A host-side registry (plus authoritative
    Cloudflare DNS) makes sure `<name>.getecosphere.com` isn't already taken.
-3. **Eco opens a tunnel.** A `cloudflared` tunnel connects your local port to
+3. **eco opens a tunnel.** A `cloudflared` tunnel connects your local port to
    Cloudflare's edge — outbound from your machine, so no inbound ports or
    firewall holes are needed.
-4. **Eco wires up DNS.** A CNAME points `<name>.getecosphere.com` at the
+4. **eco wires up DNS.** A CNAME points `<name>.getecosphere.com` at the
    tunnel. HTTPS is automatic through Cloudflare.
 5. **Your choice is recorded.** `serve.subdomain` is written into
    `ecompose.yml`, so `eco serve` reuses it next time.
@@ -169,10 +169,10 @@ eco serve list                          # show active tunnels on this host
 eco serve help                          # full usage
 ```
 
-- **`--port`** — the local port of your app. If omitted, Eco reads
+- **`--port`** — the local port of your app. If omitted, eco reads
   `expose.target_port` from `ecompose.yml`, then falls back to `3000`.
 - Same-origin by design: the Next.js / Vite / any frontend talks to your
-  backends through Eco-managed routing, so there are no CORS surprises when
+  backends through eco-managed routing, so there are no CORS surprises when
   the world visits your public URL.
 
 ---
@@ -189,5 +189,5 @@ eco serve help                          # full usage
 
 `eco serve` is the *first step* of the same journey: build on your machine →
 show the world for free → earn → move to a managed estate, funded by what you
-earned. The migration path is the same Eco workflow (`ecompose.yml` → `eco
+earned. The migration path is the same Ecosphere workflow (`ecompose.yml` → `eco
 up`), so nothing you build for `eco serve` is wasted when you scale.

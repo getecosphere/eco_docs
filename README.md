@@ -1,7 +1,7 @@
 # eco_docs_composition
 
 VitePress documentation site for the **eco** framework, deployed at
-`https://eco.stuff8.com` from CT 101 (shared with the `stuff8` estate).
+`https://docs.getecosphere.com` from CT 101 (shared with the `stuff8` estate).
 
 ## Working agreements
 

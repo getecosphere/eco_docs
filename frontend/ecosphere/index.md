@@ -46,7 +46,7 @@ It compiles on the developer's own PC or Mac:
 The flow is now:
 
 1. The developer keeps the source on **their machine**.
-2. Eco cross-compiles their services for Linux (`x86_64-unknown-linux-musl`)
+2. eco cross-compiles their services for Linux (`x86_64-unknown-linux-musl`)
    — a static binary, no glibc matching, no runtime.
 3. The binary is shipped to the Ecosphere server and run there.
 

@@ -34,7 +34,7 @@ fork → improve → pull request → maintainer merges → tag vX.Y.Z → CI pu
 5. **CI** (`.github/workflows/lxs-publish.yml`) cross-compiles the LXS for
    `linux/amd64` (static musl), packages it with checksums + provenance, and
    publishes `name@version` to the LXS Registry under the canonical
-   **Eco Creator** publisher identity.
+   **Ecosphere Creator** publisher identity.
 
 ## The contract is the review standard
 
@@ -60,10 +60,10 @@ nothing is labelled `verified` prematurely.
 
 Published history carries the canonical publisher identity:
 
-> **Eco Creator** &lt;dev@getecosphere.com&gt;
+> **Ecosphere Creator** &lt;dev@getecosphere.com&gt;
 
 Contributor identities in pull requests remain their own; the registry's
-published commits are attributed to Eco Creator to keep the platform's
+published commits are attributed to Ecosphere Creator to keep the platform's
 distribution neutral.
 
 See also: [The LXS Registry](/ecosphere/lxs-registry), [Introducing LXS](/ecosphere/), [Why Rust & Go?](/ecosphere/why-rust-and-go).

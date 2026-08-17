@@ -2,12 +2,12 @@
 layout: home
 
 hero:
-  name: Eco
+  name: Ecosphere
   text: Compose reusable domains into self-sustaining estates
   tagline: A host-native DDD platform for Proxmox. Build once, reuse everywhere — with a Docker-like developer experience, no Docker required. End-to-end, from a single developer to large teams, in the world of AI. Show your app to the world from your own machine — no domain to buy, no server to rent. Not yet released — be first to know.
   image:
     src: /og-image.png
-    alt: Eco
+    alt: Ecosphere
   actions:
     - theme: brand
       text: Show your app publicly
@@ -16,7 +16,7 @@ hero:
       text: Get Started
       link: /guide/getting-started
     - theme: alt
-      text: Why Eco?
+      text: Why Ecosphere?
       link: /why/eco-vs-docker
     - theme: alt
       text: Stuff8 Case Study
@@ -32,7 +32,7 @@ features:
   - title: One manifest to rule them
     details: CT metadata, runtimes, domains, and exposure are all declared in a single ecompose.yml.
   - title: Built-in exposure
-    details: Cloudflare tunnel → proxy CT → estate gateway → services. One public hostname per estate, managed by Eco.
+    details: Cloudflare tunnel → proxy CT → estate gateway → services. One public hostname per estate, managed by eco.
   - title: Show it publicly — free
     details: "eco serve turns your locally-running app into a real public URL on a *.getecosphere.com subdomain. No domain to buy, no server to rent, HTTPS included. Start free; pay only when the app earns."
   - title: Build locally, ship the binary
@@ -47,7 +47,7 @@ features:
 
 **Sustained a 5,000-concurrent-VU synthetic workload on a $300 mini PC with graceful degradation.**
 
-Eco was penetration-tested in August 2026 on the same hardware it runs in production: an off-the-shelf Intel i3-1220P mini PC (7.3 GiB RAM), sharing CPU, memory, and disk with four other production estates. k6 drove 1,000 → 5,000 concurrent virtual users at two production estates through the internal gateway.
+Ecosphere was penetration-tested in August 2026 on the same hardware it runs in production: an off-the-shelf Intel i3-1220P mini PC (7.3 GiB RAM), sharing CPU, memory, and disk with four other production estates. k6 drove 1,000 → 5,000 concurrent virtual users at two production estates through the internal gateway.
 
 | What held up | The numbers |
 |---|---|

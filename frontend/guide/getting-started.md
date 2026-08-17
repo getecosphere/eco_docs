@@ -1,8 +1,8 @@
 # Getting Started
 
-Eco is a **compiled Rust CLI** that manages large-scale projects using Domain-Driven Design. It decomposes projects into independent, self-sustaining domains that can be reused and recomposed into new projects. Builds happen on your machine; the artifacts ship to the server.
+eco is a **compiled Rust CLI** that manages large-scale projects using Domain-Driven Design. It decomposes projects into independent, self-sustaining domains that can be reused and recomposed into new projects. Builds happen on your machine; the artifacts ship to the server.
 
-> **Eco is not released yet.** The public installer and distribution channels are coming soon. The commands below show what the workflow will look like; watch this space.
+> **Ecosphere is not released yet.** The public installer and distribution channels are coming soon. The commands below show what the workflow will look like; watch this space.
 
 ## Requirements
 
@@ -13,13 +13,13 @@ Eco is a **compiled Rust CLI** that manages large-scale projects using Domain-Dr
 
 ## Install — coming soon
 
-Eco has not been released publicly yet. When it is, installation will be a single command:
+Ecosphere has not been released publicly yet. When it is, installation will be a single command:
 
 ```bash
-curl -fsSL https://get.eco.stuff8.com/install.sh | sh
+curl -fsSL https://getecosphere.com/install.sh | sh
 ```
 
-Until then, Eco runs from source in development.
+Until then, eco runs from source in development.
 
 Verify the install:
 
@@ -48,7 +48,7 @@ cd <project>
 eco up dev
 ```
 
-Eco reads `ecompose.yml`, provisions runtimes locally, wires `.env` files, builds Rust services, and starts them (under PM2 for local dev).
+eco reads `ecompose.yml`, provisions runtimes locally, wires `.env` files, builds Rust services, and starts them (under PM2 for local dev).
 
 ## Deploy to Proxmox
 
@@ -58,7 +58,7 @@ Still on your developer machine:
 eco up --remote
 ```
 
-Eco cross-compiles the Rust services and builds the frontends locally, then ships the artifacts to the `eco serve` agent on the host. The agent provisions the CT, installs the artifacts, runs migrations, and restarts the services under systemd — the CT never compiles anything.
+eco cross-compiles the Rust services and builds the frontends locally, then ships the artifacts to the `eco serve` agent on the host. The agent provisions the CT, installs the artifacts, runs migrations, and restarts the services under systemd — the CT never compiles anything.
 
 ## Next steps
 

@@ -21,7 +21,7 @@ A legacy Java Spring Boot app ran a **Spring Boot 3.2 / Java 17** backend alongs
 
 ## Why migrate
 
-Eco's Rust domains already ran at **4–13 MB per service** vs hundreds of MB for a JVM service. The estate's Java backend was the largest remaining consumer of memory on a mini PC (7.3 GiB RAM) shared across five production estates. Converting it removed the JVM, Spring context, Hibernate, Flyway, and the entire classpath — and eliminated an entire class of crash-loop failures from stale environment handling that had historically caused thousands of PM2 restarts.
+Ecosphere's Rust domains already ran at **4–13 MB per service** vs hundreds of MB for a JVM service. The estate's Java backend was the largest remaining consumer of memory on a mini PC (7.3 GiB RAM) shared across five production estates. Converting it removed the JVM, Spring context, Hibernate, Flyway, and the entire classpath — and eliminated an entire class of crash-loop failures from stale environment handling that had historically caused thousands of PM2 restarts.
 
 ---
 

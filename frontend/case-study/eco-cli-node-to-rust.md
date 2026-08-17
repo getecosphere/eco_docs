@@ -6,18 +6,18 @@
 
 ## The plot twist: the orchestrator was the last to be rewritten
 
-Eco's estates are overwhelmingly Rust. Auth, photos, inventory, marketplace, bidding, chat, profile, rag, email-manager, contact-form — all compiled, tiny, native binaries that start in milliseconds and sleep in single-digit megabytes.
+Ecosphere's estates are overwhelmingly Rust. Auth, photos, inventory, marketplace, bidding, chat, profile, rag, email-manager, contact-form — all compiled, tiny, native binaries that start in milliseconds and sleep in single-digit megabytes.
 
 But the tool that *composed, provisioned, and deployed* all of those Rust services was itself a **Node.js CLI**.
 
-That seems backwards. If Rust is Eco's cheapest runtime, why did the most important command in the system run on the most expensive runtime Eco knows how to provision?
+That seems backwards. If Rust is Ecosphere's cheapest runtime, why did the most important command in the system run on the most expensive runtime Ecosphere knows how to provision?
 
 The answer is the ordering was intentional, and it is exactly the ordering this page recommends:
 
 1. **Domains first** — prove that Rust services composed into estates actually work, under real load, before betting the control plane on it.
 2. **Then the CLI** — once the workflow is stable, port the orchestrator so *everything* in the pipeline is native.
 
-Eco's own [Why Rust](/why/why-rust) page said it plainly for a long time:
+Ecosphere's own [Why Rust](/why/why-rust) page said it plainly for a long time:
 
 > "Node for the browser and CLI tooling, Rust for the services that run 24/7 on the CT."
 
@@ -36,7 +36,7 @@ That rule made sense while the CLI was just a thin dispatcher over proven Bash s
 - `eco sync` streams production databases down to a dev machine
 - `eco prox` manages CTs, tunnels, and archives
 
-When this command runs, it is **on the Proxmox host and inside every CT**. It is what a remote deploy launches to update a production estate. It is the tool an operator reaches for during an incident. It is, in other words, an always-on piece of production infrastructure — which is precisely the thing Eco's own philosophy says should be a small native binary, not a Node package.
+When this command runs, it is **on the Proxmox host and inside every CT**. It is what a remote deploy launches to update a production estate. It is the tool an operator reaches for during an incident. It is, in other words, an always-on piece of production infrastructure — which is precisely the thing Ecosphere's own philosophy says should be a small native binary, not a Node package.
 
 > If a domain service had the same availability profile as the CLI — started by every deploy, present on every machine, part of every incident — we would never have allowed it to be a Node package. The CLI was a 100 MB Node application running on every CT for years, and we only noticed because we finally asked the question.
 
@@ -44,18 +44,18 @@ When this command runs, it is **on the Proxmox host and inside every CT**. It is
 
 ## The real problem: npm, `node_modules`, and a 100 MB `eco`
 
-A Node CLI is not "a script." A real one is a package — with a dependency tree. Eco's CLI pulled in `sql.js` (a full SQLite port compiled to WebAssembly) for the resource registry, plus the transitive tree that any non-trivial npm package accumulates.
+A Node CLI is not "a script." A real one is a package — with a dependency tree. The eco CLI pulled in `sql.js` (a full SQLite port compiled to WebAssembly) for the resource registry, plus the transitive tree that any non-trivial npm package accumulates.
 
 ### What shipping a Node CLI actually means
 
 - **`node_modules/`** — the CLI could not run from a compiled artifact. It shipped as a directory tree of thousands of package files. Every CT that ran `eco up` first had to materialize that tree.
 - **`npm install` on every CT** — because `node_modules` is never committed, each deploy ran `npm install && npm link` inside the CT. That is network I/O, disk writes, and a few seconds of wall-clock on every single provisioning run.
 - **`npm link`** — a global symlink dance so the `eco` binary resolved on `PATH`. Fragile across environments, and it must be redone after every update.
-- **A Node.js runtime dependency** — the CLI required Node to be present and correct on the Proxmox host *and* inside every CT. Provisioning Node is a service Eco understands — but the control plane should not *depend* on the thing it provisions.
+- **A Node.js runtime dependency** — the CLI required Node to be present and correct on the Proxmox host *and* inside every CT. Provisioning Node is a service Ecosphere understands — but the control plane should not *depend* on the thing it provisions.
 - **~100 MB+ installed** — the interpreter, the standard library, and the dependency tree. For a tool whose entire job is to keep estates small.
 - **WASM SQLite** — the registry used `sql.js`, a SQLite compiled to WebAssembly so it could run *inside* Node. It worked, but it was a compatibility layer on top of a runtime that was itself already a compatibility layer.
 
-The absurdity is easy to state: **Eco's CLI was the single largest thing Eco deployed to a CT that was not an application**, and it was a Node package whose whole purpose was to keep applications small.
+The absurdity is easy to state: **the eco CLI was the single largest thing Ecosphere deployed to a CT that was not an application**, and it was a Node package whose whole purpose was to keep applications small.
 
 ### The pain you feel on every deploy
 
@@ -160,6 +160,6 @@ No interpreter anywhere in the chain. The orchestrator and the orchestrated are 
 
 ## Would we do it again
 
-Yes — and if we were starting over, we would still port the CLI *after* the domains, but we would budget for it as a first-class workstream rather than a trailing chore. The Node island (CLI + the deploy receiver that was later retired with webhook deploys) was the last place where Eco shipped something that did not match its own philosophy of "smallest runtime that does the job." Now it does.
+Yes — and if we were starting over, we would still port the CLI *after* the domains, but we would budget for it as a first-class workstream rather than a trailing chore. The Node island (CLI + the deploy receiver that was later retired with webhook deploys) was the last place where Ecosphere shipped something that did not match its own philosophy of "smallest runtime that does the job." Now it does.
 
-See: [Why Eco promotes Rust](/why/why-rust), [The story behind Eco](/why/story), [Architecture](/reference/architecture).
+See: [Why Ecosphere promotes Rust](/why/why-rust), [The story behind Ecosphere](/why/story), [Architecture](/reference/architecture).

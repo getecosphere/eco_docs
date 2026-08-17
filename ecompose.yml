@@ -1,7 +1,7 @@
 # ecompose v2 — eco_docs
-# The public eco documentation site (eco.stuff8.com): a VitePress static
-# frontend composed from source (this repo). email-manager composed from the
-# LXS registry. contact-form is deferred (repo does not exist yet).
+# The public Ecosphere documentation site (docs.getecosphere.com): a VitePress
+# static frontend composed from source (this repo). email-manager composed from
+# the LXS registry. contact-form is deferred (repo does not exist yet).
 #
 # Builds happen on the developer machine; the server is executable-only.
 
@@ -10,7 +10,7 @@ main: eco_docs
 
 estates:
   eco_docs:
-    hostname: doc.getecosphere.com
+    hostname: docs.getecosphere.com
     ingress: tunnel
     cloudflare_account: getecosphere
     services:
@@ -19,7 +19,7 @@ estates:
 
 expose:
   enabled: true
-  hostname: doc.getecosphere.com
+  hostname: docs.getecosphere.com
   service: eco-docs-frontend
   proxy_ct: 100
   cloudflare_account: getecosphere

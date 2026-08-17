@@ -27,7 +27,7 @@ services:
     path: notifications/backend
 ```
 
-A composition app declares the capabilities it wants; Eco resolves them from
+A composition app declares the capabilities it wants; eco resolves them from
 the registry (or ships the workspace source) and wires them together.
 **Adding a domain to an estate is adding a line to the `services:` list.**
 
@@ -86,7 +86,7 @@ Reusable contact/lead capture domain. Owns consent, rate-limited submissions (pe
 
 ## Stuff8 domain domains
 
-Stuff8 — the personal inventory → marketplace estate — composes its own domain domains on top of the reusable ones. These demonstrate how a product expresses its specific model through Eco.
+Stuff8 — the personal inventory → marketplace estate — composes its own domain domains on top of the reusable ones. These demonstrate how a product expresses its specific model through Ecosphere.
 
 ### inventory
 
@@ -111,7 +111,7 @@ Offers, buyer selection, and negotiation. Buyers submit offers; owners accept, r
 
 ### profile
 
-User profile: bio, experience, education, skills, certifications, social links. Split out of the legacy monolith as an independent Eco-managed domain.
+User profile: bio, experience, education, skills, certifications, social links. Split out of the legacy monolith as an independent eco-managed domain.
 
 - **Requires:** auth
 - **Stack:** Rust, MongoDB
