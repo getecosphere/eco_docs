@@ -8,26 +8,41 @@
 project: eco_docs
 main: eco_docs
 
+ct:
+  id: 201
+
+data:
+  mongo: 203
+
 estates:
   eco_docs:
     hostname: docs.getecosphere.com
     ingress: tunnel
     cloudflare_account: getecosphere
     services:
+      - gateway
       - eco-docs-frontend
       - email-manager-backend
 
 expose:
   enabled: true
   hostname: docs.getecosphere.com
-  service: eco-docs-frontend
-  proxy_ct: 100
+  service: gateway
+  proxy_ct: 200
   cloudflare_account: getecosphere
 
 services:
+  gateway:
+    lxs: gateway@0.3.0
+    port: 4597
+
   eco-docs-frontend:
     path: frontend
     runtimes: [node@20]
+    access:
+      routes:
+        - path: /*
+          level: public
 
   email-manager-backend:
     lxs: email-manager@1.0.1
